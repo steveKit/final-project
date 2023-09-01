@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { useLonerContext } from "../context/LonerContext";
 
 const SET_LOCAL_HIKES = "SET_LOCAL_HIKES";
@@ -8,6 +9,7 @@ const SET_SEARCH_RADIUS = "SET_SEARCH_RADIUS";
 const SearchBar = () => {
     const { state, dispatch } = useLonerContext();
     const { searchInput, searchRadius } = state;
+    const navigate = useNavigate();
     
     const handleInputchange = (e) => {
         dispatch({ type: SET_LOCAL_HIKES, payload: [] });
@@ -28,7 +30,8 @@ const SearchBar = () => {
                     dispatch({ type: SET_LOCAL_HIKES, payload: data.data });
                 }
             })
-            .catch((err) => console.error(err.message));
+            .catch((err) => console.error(err.message)
+        );
     };
 
     return (

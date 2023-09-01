@@ -1,8 +1,16 @@
 import styled from "styled-components";
 
+import { useLonerContext } from "../context/LonerContext";
 import Hikes from "./Hikes";
 
-const HikeWrapper = ({ localHikes }) => {
+const HikeResults = ({ isVisible }) => {
+
+    if (!isVisible) {
+        return null;
+    }
+
+    const { state } = useLonerContext();
+    const { localHikes } = state;
 
     return (
         <Wrapper >
@@ -18,15 +26,15 @@ const HikeWrapper = ({ localHikes }) => {
 };
 
 const Wrapper = styled.div`
+    position: relative;
+    top: 20vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     box-sizing: border-box;
-    position: absolute;
-    bottom: 10vh;
-    z-index: 5;
-    width: 80%;
-    gap: 2rem;
+    width: 100%;
+    gap: 3rem;
+    margin-bottom: 4rem;
 `;
 
-export default HikeWrapper;
+export default HikeResults;

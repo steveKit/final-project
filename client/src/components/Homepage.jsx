@@ -1,14 +1,20 @@
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import { useLonerContext } from "../context/LonerContext";
 import SearchBar from "./SearchBar";
-import HikeWrapper from "./HikeWrapper";
-
+import HikeResults from "./HikeResults";
 
 const Homepage = () => {
     const { state } = useLonerContext();
     const { localHikes } = state;
+    const hikeResultsRef = useRef(null);
+
+    useEffect(() => {
+        if (localHikes) {
+            hikeResultsRef.current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
+        }
+    }, [localHikes]);
 
     return (
         <>
@@ -16,22 +22,18 @@ const Homepage = () => {
                 <TitleText>
                     LONER
                 </TitleText>
-            </Wrapper>           
-            <SearchBar />                            
-            <HikeWrapper
-                localHikes={localHikes}
-            />                
+            <SearchBar />
+            </Wrapper>
+            <div ref={hikeResultsRef} />                       
+            <HikeResults isVisible={localHikes.length > 0} />                                          
         </>
     )
 };
 
 const Wrapper = styled.div`
-    position: absolute;
     box-sizing: border-box;
     width: 100%;
-    top: 5vh;
-    left: 0;
-    padding: 2vh 0 2vh 3vw;
+    padding: 0 0 2vh 3vw;
 `;
 
 const TitleText = styled.h1`    

@@ -33,7 +33,7 @@ const HikeContainer = styled.button`
     display: flex;
     flex-wrap: wrap;
     background: rgba(0, 0, 0, 0.1);
-    backdrop-filter: brightness(75%) blur(5px);
+    backdrop-filter: brightness(85%) blur(3px);
     padding: 1.5rem;
     border: 2px solid var(--text-color);
     border-radius: 15px;
@@ -52,14 +52,15 @@ const TextContainer = styled.div`
 
 const TextTitle = styled.h1`
     text-align: start;
-    color: var(--accent-color);
+    color: var(--secondary-color);
     max-width: 300px;
 `;
 
 const TextSection = styled.p`
     font-family: var(--body-font-family);
     font-size: 1.2rem;
-    color: var(--secondary-color);
+    color: var(--primary-color);
+    opacity: 0.9;
     margin: 5px;
 `;
 
