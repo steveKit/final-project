@@ -5,7 +5,7 @@ const morgan = require('morgan');
 
 const PORT = 8000;
 
-const { getHikes, getPopularTimes } = require("./handlers/locationHandlers");
+const { getHikes, getPopularTimes, getBusynessNow, getWeather } = require("./handlers/locationDataHandlers");
 
 express()
     .use(function(req, res, next) {
@@ -25,10 +25,11 @@ express()
     .use(express.urlencoded({ extended: false }))
     .use('/', express.static(__dirname + '/'))
 
-    //endpoints
+    //locationData endpoints
     .get("/api/get-hikes", getHikes)
     .get("/api/populartimes", getPopularTimes)
-    //.get("/get-weather", getWeather)
+    .get("/api/get-busyness-now", getBusynessNow)
+    .get("/get-weather", getWeather)
 
 
     .listen(PORT, () => console.info(`Listening on port ${PORT}`));
