@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { useLonerContext } from "../context/LonerContext";
 
 const SET_LOCAL_HIKES = "SET_LOCAL_HIKES";
@@ -9,7 +8,6 @@ const SET_SEARCH_RADIUS = "SET_SEARCH_RADIUS";
 const SearchBar = () => {
     const { state, dispatch } = useLonerContext();
     const { searchInput, searchRadius } = state;
-    const navigate = useNavigate();
     
     const handleInputchange = (e) => {
         dispatch({ type: SET_LOCAL_HIKES, payload: [] });
@@ -49,7 +47,7 @@ const SearchBar = () => {
                 <Option value="100">100 km</Option>
                 <Option value="150">150 km</Option>
             </SearchRadius>           
-            <Submit type="submit">Search</Submit>
+            <Submit type="submit">Search</Submit>          
         </SearchBarContainer>
         
     )
@@ -62,14 +60,12 @@ const SearchBarContainer = styled.form`
     box-sizing: border-box;
     border: 1px solid var(--secondary-color);
     border-radius: 30px;
-    position: absolute;
-    bottom: 15vh;
-    right: 50%;
-    transform: translateX(50%);
-    min-width: 470px;
+    position: sticky;
+    top: 2;
+    min-width: 350px;
     width: fit-content;
     padding: 5px 25px;
-
+    margin: 0 10px;
 `;
 
 const SearchInput = styled.input`

@@ -11,7 +11,9 @@ const Homepage = () => {
     const hikeResultsRef = useRef(null);
 
     useEffect(() => {
-        if (localHikes) {
+        if (localHikes.length === 0) {
+            window.scrollTo({ behavior: "smooth", top: 0 });
+        } else {
             hikeResultsRef.current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
         }
     }, [localHikes]);
@@ -22,7 +24,7 @@ const Homepage = () => {
                 <TitleText>
                     LONER
                 </TitleText>
-            <SearchBar />
+                <SearchBar />
             </Wrapper>
             <div ref={hikeResultsRef} />                       
             <HikeResults isVisible={localHikes.length > 0} />                                          
@@ -31,9 +33,13 @@ const Homepage = () => {
 };
 
 const Wrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     box-sizing: border-box;
     width: 100%;
-    padding: 0 0 2vh 3vw;
+    height: 80vh;
 `;
 
 const TitleText = styled.h1`    

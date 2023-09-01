@@ -26,6 +26,8 @@ const Wrapper = styled.div`
     justify-content: space-between;
     align-items: center;
     box-sizing: border-box;
+    position: sticky;
+    top: 0;
     height: 10vh;
     width: 100%;
     background: rgba(0, 0, 0, 0.1);

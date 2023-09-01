@@ -11,7 +11,7 @@ const HikeResults = ({ isVisible }) => {
 
     const { state } = useLonerContext();
     const { localHikes } = state;
-
+    console.log(localHikes);
     return (
         <Wrapper >
             {localHikes ? (        
@@ -27,14 +27,14 @@ const HikeResults = ({ isVisible }) => {
 
 const Wrapper = styled.div`
     position: relative;
-    top: 20vh;
+    top: 15vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     box-sizing: border-box;
     width: 100%;
     gap: 3rem;
-    margin-bottom: 4rem;
+    padding: 4rem;
 `;
 
 export default HikeResults;

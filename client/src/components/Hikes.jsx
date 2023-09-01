@@ -44,6 +44,7 @@ const HikeContainer = styled.button`
 `;
 
 const TextContainer = styled.div`
+    text-align: start;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -51,7 +52,6 @@ const TextContainer = styled.div`
 `;
 
 const TextTitle = styled.h1`
-    text-align: start;
     color: var(--secondary-color);
     max-width: 300px;
 `;
@@ -70,9 +70,9 @@ const AccentSpan = styled.span`
 
 const Image = styled.img`
     margin: 0.5rem;
-    border: 1px solid var(--accent-color);
+    border: 2px solid var(--text-color);
     border-radius: 15px;
-    box-shadow: -3px 5px 25px 2px var(--text-color);
+    box-shadow: 0px 0px 15px 1px var(--text-color);
     width: 200px;
     height: 200px;
     object-fit: cover;

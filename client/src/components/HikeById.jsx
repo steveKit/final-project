@@ -30,7 +30,7 @@ const HikeById = () => {
             .catch((err) => console.error(err.message));
         }
     }, [activeHike]);
-    
+    console.log(forecast);
     return (
         <HikeContainer>
             {Object.keys(activeHike).length === 0 ? (
