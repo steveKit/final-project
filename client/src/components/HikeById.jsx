@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 
 const HikeById = () => {
     const [ activeHike, setActiveHike ] = useState({});
+    const [ forecast, setForecast ] = useState({});
+    const [ busynessNow, setBusynessNow ] = useState(null);
     const { hikeId } = useParams();
     const { state } = useLonerContext();
     const { localHikes } = state;
@@ -12,11 +14,26 @@ const HikeById = () => {
     useEffect(() => {
         const findActiveHike = localHikes.find((hike) => hike.place_id === hikeId);
         setActiveHike(findActiveHike);
-    }, []);  
+    }, []); 
+    
+    useEffect(() => {
+        if (activeHike.location) {
+            const { lat, lng } = activeHike.location;
 
+            fetch(`/api/get-weather?lat=${lat}&lng=${lng}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status === 200 && data.data) {
+                        setForecast(data.data);
+                    }
+            })
+            .catch((err) => console.error(err.message));
+        }
+    }, [activeHike]);
+    
     return (
         <HikeContainer>
-            {activeHike[0] ? (
+            {Object.keys(activeHike).length === 0 ? (
                 <></>
             ) : (            
                 <Image src={activeHike.photoURL} />                 

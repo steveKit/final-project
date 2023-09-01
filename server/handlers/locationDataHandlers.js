@@ -2,16 +2,9 @@
 
 const axios = require("axios");
 require("dotenv").config();
-const { GOOGLE_URI } = process.env;
+const { GOOGLE_URI, WEATHER_KEY } = process.env;
 
-const {
-    lowestWeights,
-    lowWeights,
-    midWeights,
-    highWeights,
-    variableMidDayWeights,
-    hourWeights
-} = require("../data/populartimesWeightArrays");
+const { getPopularTimes, getBusynessNow } = require("../scripts/populartimesScripts");
 
 const getHikes = async (req, res) => {
     const { searchTerm, radius } = req.query;
@@ -21,15 +14,17 @@ const getHikes = async (req, res) => {
     };
 
     try {
-        const searchResults = await axios.get('https://maps.googleapis.com/maps/api/geocode/json', {
+        const searchResults = await axios.get('https://maps.googleapis.com/maps/api/place/findplacefromtext/json', {
             params: {
-                address: searchTerm,
+                fields: 'geometry',
+                input: `${searchTerm}`,
+                inputtype: 'textquery',
                 key: GOOGLE_URI,
             },
         });
 
-        if (searchResults) {
-            const { lat, lng } = searchResults.data.results[0].geometry.location;
+        if (searchResults.data.candidates.length > 0) {
+            const { lat, lng } = searchResults.data.candidates[0].geometry.location;           
             const radiusInMeters = radius * 1000;
             
             const hikeResults = await axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', {
@@ -40,24 +35,40 @@ const getHikes = async (req, res) => {
                     key: GOOGLE_URI,
                 },
             });
+            
+            const { results } = hikeResults.data;
 
-            if (hikeResults) {
-                const { results } = hikeResults.data;
+            if (results.length > 0) {
+                const hikesArray = await Promise.all(results.map( async (hike) => {
 
-                const hikesArray = results.map(hike => {
-                    const photoRef = hike.photos[0].photo_reference;
-
-                    return {
+                    // get ref photo from google
+                    const photoRef = hike.photos ? hike.photos[0].photo_reference : 'AUacShi6l6hVIvY3H0UKdqfmnhEA6Mzfc12xVuj8sCnsNv2WKuMWpROIy4owHNHTLIeAs_OzvgD-BZjo8igxiaGF8vlPttIV8fEVnggbSqUx1OrIljzMHVu9-QB3twDBT230DSOobQAhjAATVoEnCB7-MHg2LljmX1pRdBi5D7BbSo8_Qgi7';
+                    const hikePhotoURLRef = await axios.get('https://maps.googleapis.com/maps/api/place/photo', {
+                        params: {
+                            maxwidth: 400,
+                            photo_reference: photoRef,
+                            key: GOOGLE_URI,
+                        },
+                    });
+                        
+                    const hikePhotoURL = hikePhotoURLRef.request.res.responseUrl;
+                    const populartimes = getPopularTimes();
+                    const busyness = getBusynessNow();
+                        
+                    return ({
                         name: hike.name,
                         address: hike.vicinity,
                         rating: hike.rating,
                         ratingQuant: hike.user_ratings_total,
-                        photoURL: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=${photoRef}&key=${GOOGLE_URI}`,
+                        photoURL: hikePhotoURL,
                         place_id: hike.place_id,
-                        location: hike.geometry.location,
-                    }
-                });           
-                res.status(200).json({ status: 200, data: hikesArray });
+                        location: hike.geometry.location, 
+                        populartimes: populartimes,
+                        busyness: busyness,              
+                    })                     
+                }));
+
+                res.status(200).json({ status: 200, data: hikesArray });  
             } else {
                 res.status(404).json({ status: 404, message: `No hikes found within ${radius}km of ${searchTerm}`})
             }
@@ -69,52 +80,45 @@ const getHikes = async (req, res) => {
     }
 };
 
-const getPopularTimes = async (req, res) => {
-    const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-    const populartimesData = [];
-
-    const todayIndex = new Date().getDay();
-
-    for (let i = 0; i < daysOfWeek.length; i++) {
-        const dayIndex = (todayIndex + i - 1) % 7;
-        const day = daysOfWeek[dayIndex];
-
-        const hourlyData = hourWeights.map(weight => Math.floor(Math.random() * weight));
-
-        populartimesData.push({
-            name: day,
-            data: hourlyData,
-        });
-    }
-
-    if (populartimesData.length > 0) {
-        res.status(200).json({ status:200, data: populartimesData });
-    } else {
-        res.status(404).json({ status:404, message: "Populartimes data not found" });
-
-    }
-    
-};
-
-const getBusynessNow = async (req, res) => {
-    const currentDate = new Date();
-    const timeNow = currentDate.getHours();
-
-    if (timeNow && timeNow < hourWeights.length) {
-        const currentPopularity = Math.floor(Math.random() * hourWeights[timeNow]);
-        res.status(200).json({ status: 200, data: currentPopularity });
-    } else {
-        res.status(404).json({ status: 404, message: "couldn't find current usage data" });
-    }
-};
-
 const getWeather = async (req, res) => {
+    const { lat, lng } = req.query;
 
+    if (!lat || !lng) {
+        return res.status(400).json({ status: 400, message: "Both lat and lng required"});
+    }
+
+    try {
+        const forecast = await axios.get('https://api.weatherapi.com/v1/forecast.json', {
+            params: {
+                key: WEATHER_KEY,
+                q: `${lat},${lng}`,
+                days: 7,
+                aqi: 'yes',
+                alerts: 'yes',
+            },
+        });
+
+        const forecastObj = forecast.data;
+
+        if (forecastObj.hasOwnProperty("location")) {
+            delete forecastObj.location;
+        }
+
+        if (forecastObj.alerts.alert.length === 0) {
+            delete forecastObj.alerts;
+        };
+
+        if (forecast.status === 200) {
+            res.status(200).json({ status: 200, data: forecast.data });
+        } else if (forecast.status === 400) {
+            res.status(400).json({ status: 400, message: forecast.message });
+        }
+    } catch (err) {
+        res.status(err.response.status).json({ status: err.response.status, message: err.response.statusText });
+    }
 };
 
 module.exports = {
     getHikes,
-    getPopularTimes,
-    getBusynessNow,
     getWeather
 } 
