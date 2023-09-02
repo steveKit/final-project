@@ -1,18 +1,24 @@
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-const Header = ({ user, isAuthenticated, login, logout }) => {
+const Header = ({ isAuthenticated, login, logout }) => {
 
     return (
     
         <Wrapper>
-            <Logo src="/assets/Favicon.png"/>
+            <Link to="/">
+                <Logo src="/assets/Favicon.png"/>
+            </Link>
+            
             {isAuthenticated ? (
                     <LogoutContainer>
-                        <Text>Hello, {user.nickname}</Text>
-                        <Login onClick={logout}>Logout</Login>
+                        <Link to="/user">
+                            <Button>Profile</Button>
+                        </Link>
+                        <Button onClick={logout}>Logout</Button>
                     </LogoutContainer>
                 ) : (
-                    <Login onClick={login}>Login</Login>
+                    <Button onClick={login}>Login</Button>
                 )
             }
             
@@ -32,7 +38,7 @@ const Wrapper = styled.div`
     width: 100%;
     background: rgba(0, 0, 0, 0.1);
     backdrop-filter: brightness(100%) blur(3px);
-    z-index: 10;
+    z-index: 15;
     padding: 15px 15px;
 `;
 
@@ -42,7 +48,7 @@ const Logo = styled.img`
     opacity: 75%;
 `;
 
-const Login = styled.button`
+const Button = styled.button`
     font-family: var(--body-font-family);
     font-size: 1.2rem;
     color: var(--light-accent-color);
@@ -67,13 +73,6 @@ const LogoutContainer = styled.div`
     flex-direction: row;
     align-items: center;
     gap: 1.5rem;
-`;
-
-const Text = styled.p`
-    color: var(--text-color);
-    font-weight: 500;
-    font-size: 1.5rem;
-    opacity: 0.8;
 `;
 
 export default Header;

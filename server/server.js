@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const PORT = 8000;
 
 const { getHikes, getWeather } = require("./handlers/locationDataHandlers");
+const { getUser } = require("./handlers/userHandlers");
 
 express()
     .use(function(req, res, next) {
@@ -29,5 +30,14 @@ express()
     .get("/api/get-hikes", getHikes)
     .get("/api/get-weather", getWeather)
 
+    //user enpoints
+    .get("/api/get-user/:id", getUser)
+
+    .get("*", (req, res) => {
+        res.status(404).json({
+        status: 404,
+        message: "This is obviously not what you are looking for.",
+        });
+    })
 
     .listen(PORT, () => console.info(`Listening on port ${PORT}`));

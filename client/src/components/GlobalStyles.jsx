@@ -51,6 +51,26 @@ export default  createGlobalStyle`
         background-position: 50% 40%;
         background-size: cover;
         line-height: 1;
+        overflow: overlay;
+
+        ::-webkit-scrollbar {
+            background: rgb(95, 115, 140);
+            width: 13px;
+        }
+        ::-webkit-scrollbar-track {   
+            display: none;
+            background: none;
+            border: solid 5px transparent;
+            border-radius: 25px;
+        }
+        ::-webkit-scrollbar-track-piece {
+            display: none;
+        }
+        ::-webkit-scrollbar-thumb {
+            border-radius: 25px;
+            -webkit-box-shadow: inset 0 0 15px var(--text-color); 
+            border: solid 5px transparent;
+        }
     }
     h1 {
         font-family: var(--heading-font-family);

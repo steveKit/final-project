@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 const SET_LOCAL_HIKES = "SET_LOCAL_HIKES";
 const SET_SEARCH_INPUT = "SET_SEARCH_INPUT";
 const SET_SEARCH_RADIUS = "SET_SEARCH_RADIUS";
-const SET_USER_ID = "SET_USER_ID";
+const SET_USER = "SET_USER";
 
 const lonerReducer = (state, action) => {
     switch (action.type) {
@@ -14,8 +14,8 @@ const lonerReducer = (state, action) => {
             return { ...state, searchInput: action.payload };
         case SET_SEARCH_RADIUS:
             return { ...state, searchRadius: action.payload };
-        case SET_USER_ID:
-            return { ...state, userId: action.payload };
+        case SET_USER:
+            return { ...state, userObj: action.payload };
         default:
             return state;
     }
@@ -25,7 +25,7 @@ const initialState = {
     localHikes: [],
     searchInput: "",
     searchRadius: 50,
-    userId: null,
+    userObj: null,
 };
 
 const LonerContext = createContext();
@@ -37,9 +37,18 @@ export const LonerProvider = ({ children }) => {
     useEffect(() => {
         if (user) {
             const userIdString = user.sub.split("auth0|")[1];
-            dispatch({ type: SET_USER_ID, payload: userIdString });
+            
+            fetch(`/api/get-user/${userIdString}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    if (data.status === 200 && data.data) {
+                        dispatch({ type: SET_USER, payload: data.data });
+                    }
+                })
+                .catch((err) => console.error(err.message)
+                );
         } else {
-            dispatch({ type: SET_USER_ID, payload: null });
+            dispatch({ type: SET_USER, payload: null });
         }
     }, [user]);
 

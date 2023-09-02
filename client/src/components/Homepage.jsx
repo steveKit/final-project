@@ -27,7 +27,7 @@ const Homepage = () => {
                 <SearchBar />
             </Wrapper>
             <div ref={hikeResultsRef} />                       
-            <HikeResults isVisible={localHikes.length > 0} />                                          
+            <HikeResults />                                          
         </>
     )
 };

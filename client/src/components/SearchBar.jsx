@@ -60,8 +60,6 @@ const SearchBarContainer = styled.form`
     box-sizing: border-box;
     border: 1px solid var(--secondary-color);
     border-radius: 30px;
-    position: sticky;
-    top: 2;
     min-width: 350px;
     width: fit-content;
     padding: 5px 25px;

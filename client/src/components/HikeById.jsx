@@ -6,7 +6,6 @@ import { useParams } from "react-router-dom";
 const HikeById = () => {
     const [ activeHike, setActiveHike ] = useState({});
     const [ forecast, setForecast ] = useState({});
-    const [ busynessNow, setBusynessNow ] = useState(null);
     const { hikeId } = useParams();
     const { state } = useLonerContext();
     const { localHikes } = state;
@@ -30,7 +29,7 @@ const HikeById = () => {
             .catch((err) => console.error(err.message));
         }
     }, [activeHike]);
-    console.log(forecast);
+
     return (
         <HikeContainer>
             {Object.keys(activeHike).length === 0 ? (
