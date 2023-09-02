@@ -24,7 +24,7 @@ const lonerReducer = (state, action) => {
 const initialState = {
     localHikes: [],
     searchInput: "",
-    searchRadius: 50,
+    searchRadius: 25,
     userObj: null,
 };
 

@@ -5,7 +5,7 @@ const SET_LOCAL_HIKES = "SET_LOCAL_HIKES";
 const SET_SEARCH_INPUT = "SET_SEARCH_INPUT";
 const SET_SEARCH_RADIUS = "SET_SEARCH_RADIUS";
 
-const SearchBar = () => {
+const SearchBar = ({ setLoading }) => {
     const { state, dispatch } = useLonerContext();
     const { searchInput, searchRadius } = state;
     
@@ -20,6 +20,7 @@ const SearchBar = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
 
         fetch(`/api/get-hikes?searchTerm=${searchInput}&radius=${searchRadius}`)
             .then((res) => res.json())
@@ -43,9 +44,10 @@ const SearchBar = () => {
                 autoFocus
             />
             <SearchRadius value={searchRadius} onChange={handleRadiusChange}>
+                <Option value="25">25 km</Option>
                 <Option value="50">50 km</Option>
+                <Option value="75">75 km</Option>
                 <Option value="100">100 km</Option>
-                <Option value="150">150 km</Option>
             </SearchRadius>           
             <Submit type="submit">Search</Submit>          
         </SearchBarContainer>

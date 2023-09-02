@@ -1,19 +1,22 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 import { useLonerContext } from "../context/LonerContext";
 import SearchBar from "./SearchBar";
 import HikeResults from "./HikeResults";
+import LoadingAnimation from "./LoadingAnimation";
 
 const Homepage = () => {
+    const [ loading, setLoading ] = useState(false);
     const { state } = useLonerContext();
     const { localHikes } = state;
     const hikeResultsRef = useRef(null);
 
     useEffect(() => {
-        if (localHikes.length === 0) {
+        if (localHikes.length === 0) {            
             window.scrollTo({ behavior: "smooth", top: 0 });
         } else {
+            setLoading(false);
             hikeResultsRef.current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
         }
     }, [localHikes]);
@@ -24,7 +27,8 @@ const Homepage = () => {
                 <TitleText>
                     LONER
                 </TitleText>
-                <SearchBar />
+                <LoadingAnimation loading={loading} />
+                <SearchBar setLoading={setLoading} />
             </Wrapper>
             <div ref={hikeResultsRef} />                       
             <HikeResults />                                          

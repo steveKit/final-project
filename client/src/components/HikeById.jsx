@@ -32,19 +32,26 @@ const HikeById = () => {
 
     return (
         <HikeContainer>
-            {Object.keys(activeHike).length === 0 ? (
-                <></>
-            ) : (            
-                <Image src={activeHike.photoURL} />                 
-            )}
+            <ElementWrapper>
+                {Object.keys(activeHike).length === 0 ? (
+                    <></>
+                ) : (            
+                    <Image src={activeHike.photoURL} />                 
+                )}
+            </ElementWrapper>           
         </HikeContainer>
     )
 };
 
 const HikeContainer = styled.div`
     display: flex;
+    margin: 2rem;
+`;
+
+const ElementWrapper = styled.div`
+    display: flex;
     background: rgba(0, 0, 0, 0.1);
-    backdrop-filter: brightness(50%) blur(5px);
+    backdrop-filter: brightness(85%) blur(3px);
     padding: 2rem;
     border: 2px solid var(--text-color);
     border-radius: 15px;

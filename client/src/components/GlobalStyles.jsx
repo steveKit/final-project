@@ -2,7 +2,7 @@ import { createGlobalStyle } from "styled-components";
 
 export default  createGlobalStyle`
     :root {
-        --primary-color: #F3F7F4;
+        --primary-color: #f3f7f4;
         --secondary-color: #B7A18F;
         --accent-color: #b17368;
         --bold-accent-color: #EA9A1C;
