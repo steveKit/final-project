@@ -6,7 +6,7 @@ const morgan = require('morgan');
 const PORT = 8000;
 
 const { getHikes, getWeather } = require("./handlers/locationDataHandlers");
-const { getUser } = require("./handlers/userHandlers");
+const { getUser, getUserHike, addUserHike, addUserPhoto, deleteUser, deleteFavHike } = require("./handlers/userHandlers");
 
 express()
     .use(function(req, res, next) {
@@ -32,11 +32,16 @@ express()
 
     //user enpoints
     .get("/api/get-user/:id", getUser)
+    .get("/api/get-user-hike/:id", getUserHike)
+    .post("/api/add-user-hike", addUserHike)
+    .post("/api/add-user-photo", addUserPhoto)
+    .delete("/api/delete-user", deleteUser)
+    .delete("/api/delete-user-hike/:id/:hikeId", deleteFavHike)
 
     .get("*", (req, res) => {
         res.status(404).json({
         status: 404,
-        message: "This is obviously not what you are looking for.",
+        message: "endpoint not found",
         });
     })
 

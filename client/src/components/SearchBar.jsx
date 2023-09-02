@@ -75,7 +75,7 @@ const SearchInput = styled.input`
     opacity: 75%;
     box-sizing: border-box;
     background: none;
-    min-width: 400px;
+    min-width: 300px;
     width: max-content;
     border: none;
     outline: none;
