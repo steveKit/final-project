@@ -15,7 +15,7 @@ const Hikes = ({ hike }) => {
             <TextContainer>  
                 <TextTitle>{name}</TextTitle>
                 <TextSection className="address">{address}</TextSection>               
-                <TextSection>Visitors in the last hour: <AccentSpan>{busyness}</AccentSpan></TextSection>
+                <TextSection>Visitors in the last hour: <AccentSpan>{busyness[0].data}</AccentSpan></TextSection>
                 <TextSection>Drive time to trailhead: <AccentSpan>{driveTimeToHike}</AccentSpan></TextSection>
                 <TextSection>Rating: <AccentSpan>{rating}</AccentSpan></TextSection>
             </TextContainer>

@@ -36,8 +36,14 @@ const getBusynessNow = () => {
     const currentDate = new Date();
     const timeNow = currentDate.getHours();
     const currentPopularity = Math.floor(Math.random() * hourWeights[timeNow]);
+    const currentPopData = [];
     
-    return currentPopularity;
+    currentPopData.push({
+        time: timeNow,
+        data: currentPopularity
+    })
+
+    return currentPopData;
 };
 
 module.exports = {

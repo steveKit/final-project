@@ -12,8 +12,6 @@ const HikeById = () => {
     const { hikeId } = useParams();
     const { state } = useLonerContext();
     const { localHikes } = state;
-    console.log(activeHike.populartimes);
-    console.log(forecast);
 
     useEffect(() => {
         const findActiveHike = localHikes.find((hike) => hike.place_id === hikeId);
@@ -45,11 +43,11 @@ const HikeById = () => {
                     <Image src={activeHike.photoURL} />                 
                 </ElementWrapper> 
                 {activeHike.populartimes && 
-                <PopularTimesWrapper>
-                    {activeHike.populartimes.map((day) => (
-                        <DayOfTheWeek key={uuidv4()} day={day} busyness={activeHike.busyness} />
-                    ))}
-                </PopularTimesWrapper> 
+                    <PopularTimesWrapper>
+                        {activeHike.populartimes.map((day) => (
+                            <DayOfTheWeek key={uuidv4()} day={day} busyness={activeHike.busyness[0]} />
+                        ))}
+                    </PopularTimesWrapper> 
                 }
             <button onClick={addToFavHandler} >Add to favourites</button>         
             </HikeContainer>
@@ -72,7 +70,6 @@ const ElementWrapper = styled.div`
 `;
 
 const PopularTimesWrapper = styled.div`
-
     display: flex;
     flex-direction: column;
     background: rgba(0, 0, 0, 0.2);
