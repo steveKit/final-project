@@ -2,7 +2,7 @@ import { createGlobalStyle } from "styled-components";
 
 export default  createGlobalStyle`
     :root {
-        --primary-color: #f3f7f4;
+        --primary-color: rgb(243, 247, 244);
         --secondary-color: #B7A18F;
         --accent-color: #b17368;
         --bold-accent-color: #EA9A1C;
@@ -102,4 +102,24 @@ export default  createGlobalStyle`
         border-collapse: collapse;
         border-spacing: 0;
     }
+    button {
+        font-family: var(--body-font-family);
+        font-size: 1.2rem;
+        color: var(--light-accent-color);
+        background: none;
+        box-sizing: border-box;
+        border: 1px solid var(--text-color);
+        border-radius: 25px;
+        width: max-content;
+        padding: 5px 15px;
+        opacity: 75%;
+        transition: all 300ms ease;
+
+        &:hover {
+            cursor: pointer;
+            color: var(--bold-accent-color);
+            background-color: var(--text-color);
+        }
+    }
+    
 `;

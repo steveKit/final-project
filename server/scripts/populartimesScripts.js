@@ -13,8 +13,13 @@ const getPopularTimes = () => {
 
     const todayIndex = new Date().getDay();
 
-    for (let i = 0; i < daysOfWeek.length; i++) {
-        const dayIndex = (todayIndex + i - 1) % 7;
+    populartimesData.push({
+        name: "Today",
+        data: hourWeights.map(weight => Math.floor(Math.random() * weight)),
+    });
+
+    for (let i = 0; i < daysOfWeek.length - 1; i++) {
+        const dayIndex = (todayIndex + i) % 7;
         const day = daysOfWeek[dayIndex];
 
         const hourlyData = hourWeights.map(weight => Math.floor(Math.random() * weight));
@@ -24,7 +29,6 @@ const getPopularTimes = () => {
             data: hourlyData,
         });
     }
-
     return populartimesData;
 };
 

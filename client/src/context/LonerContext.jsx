@@ -5,6 +5,7 @@ const SET_LOCAL_HIKES = "SET_LOCAL_HIKES";
 const SET_SEARCH_INPUT = "SET_SEARCH_INPUT";
 const SET_SEARCH_RADIUS = "SET_SEARCH_RADIUS";
 const SET_USER = "SET_USER";
+const SET_ERROR = "SET_ERROR";
 
 const lonerReducer = (state, action) => {
     switch (action.type) {
@@ -16,6 +17,11 @@ const lonerReducer = (state, action) => {
             return { ...state, searchRadius: action.payload };
         case SET_USER:
             return { ...state, userObj: action.payload };
+        case SET_ERROR:
+            const errorMessage = action.payload.status === 500 ? "There was an unknown error completing your search." : action.payload.message;
+            const errObj = { ...action.payload, message: errorMessage };
+            
+            return { ...state, error: errObj };    
         default:
             return state;
     }
@@ -26,6 +32,7 @@ const initialState = {
     searchInput: "",
     searchRadius: 25,
     userObj: null,
+    error: {},
 };
 
 const LonerContext = createContext();

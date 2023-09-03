@@ -1,24 +1,31 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 
 const Header = ({ isAuthenticated, login, logout }) => {
+    const location = useLocation();
+
+    const handleLogoClick = () => {
+        if (location.pathname === '/') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    };
 
     return (
     
         <Wrapper>
-            <Link to="/">
+            <Link to="/" onClick={handleLogoClick} >
                 <Logo src="/assets/Favicon.png"/>
             </Link>
             
             {isAuthenticated ? (
                     <LogoutContainer>
-                        <Link to="/user">
-                            <Button>Profile</Button>
+                        <Link to="/user" >
+                            <button>Profile</button>
                         </Link>
-                        <Button onClick={logout}>Logout</Button>
+                        <button onClick={logout}>Logout</button>
                     </LogoutContainer>
                 ) : (
-                    <Button onClick={login}>Login</Button>
+                    <button onClick={login}>Login</button>
                 )
             }
             
@@ -46,26 +53,6 @@ const Logo = styled.img`
     width: 75px;
     height: 75px;
     opacity: 75%;
-`;
-
-const Button = styled.button`
-    font-family: var(--body-font-family);
-    font-size: 1.2rem;
-    color: var(--light-accent-color);
-    background: none;
-    box-sizing: border-box;
-    border: 1px solid var(--text-color);
-    border-radius: 25px;
-    width: max-content;
-    padding: 5px 15px;
-    opacity: 75%;
-    transition: all 300ms ease;
-
-    &:hover {
-        cursor: pointer;
-        color: var(--bold-accent-color);
-        background-color: var(--text-color);
-    }
 `;
 
 const LogoutContainer = styled.div`

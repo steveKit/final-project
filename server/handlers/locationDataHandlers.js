@@ -14,9 +14,10 @@ const getHikes = async (req, res) => {
     };
 
     try {
+        //get geo coordinates
         const searchResults = await axios.get('https://maps.googleapis.com/maps/api/place/findplacefromtext/json', {
             params: {
-                fields: 'geometry',
+                fields: 'geometry,place_id',
                 input: `${searchTerm}`,
                 inputtype: 'textquery',
                 key: GOOGLE_URI,
@@ -24,9 +25,11 @@ const getHikes = async (req, res) => {
         });
 
         if (searchResults.data.candidates.length > 0) {
+            const searchOriginId = searchResults.data.candidates[0].place_id;
             const { lat, lng } = searchResults.data.candidates[0].geometry.location;           
             const radiusInMeters = radius * 1000;
             
+            //get hikes within radius
             const hikeResults = await axios.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', {
                 params: {
                     location: `${lat},${lng}`,
@@ -41,7 +44,7 @@ const getHikes = async (req, res) => {
             if (results.length > 0) {
                 const hikesArray = await Promise.all(results.map( async (hike) => {
 
-                    // get ref photo from google
+                    //get ref photo from google
                     const photoRef = hike.photos ? hike.photos[0].photo_reference : 'AUacShi6l6hVIvY3H0UKdqfmnhEA6Mzfc12xVuj8sCnsNv2WKuMWpROIy4owHNHTLIeAs_OzvgD-BZjo8igxiaGF8vlPttIV8fEVnggbSqUx1OrIljzMHVu9-QB3twDBT230DSOobQAhjAATVoEnCB7-MHg2LljmX1pRdBi5D7BbSo8_Qgi7';
                     const hikePhotoURLRef = await axios.get('https://maps.googleapis.com/maps/api/place/photo', {
                         params: {
@@ -50,7 +53,17 @@ const getHikes = async (req, res) => {
                             key: GOOGLE_URI,
                         },
                     });
-                        
+
+                    //get distance & drive time to hike
+                    const distanceToTrailHead = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
+                        params: {
+                            destinations: `place_id:${hike.place_id}`,
+                            origins: `place_id:${searchOriginId}`,
+                            key: GOOGLE_URI,
+                        },
+                    });
+
+                    const driveTimeToHike = distanceToTrailHead.data.rows[0].elements[0].duration.text;
                     const hikePhotoURL = hikePhotoURLRef.request.res.responseUrl;
                     const populartimes = getPopularTimes();
                     const busyness = getBusynessNow();
@@ -63,6 +76,7 @@ const getHikes = async (req, res) => {
                         photoURL: hikePhotoURL,
                         place_id: hike.place_id,
                         location: hike.geometry.location, 
+                        driveTimeToHike: driveTimeToHike,
                         populartimes: populartimes,
                         busyness: busyness,              
                     })                     
@@ -70,10 +84,10 @@ const getHikes = async (req, res) => {
 
                 res.status(200).json({ status: 200, data: hikesArray });  
             } else {
-                res.status(404).json({ status: 404, message: `No hikes found within ${radius}km of ${searchTerm}`})
+                res.status(404).json({ status: 404, message: `No hikes found.`})
             }
         } else {
-            res.status(404).json({ status: 404, message: "Search location not found"})
+            res.status(404).json({ status: 404, message: "Search location not found."})
         }
     } catch (err) {
         res.status(500).json({ status: 500, message: err.message });
@@ -84,7 +98,7 @@ const getWeather = async (req, res) => {
     const { lat, lng } = req.query;
 
     if (!lat || !lng) {
-        return res.status(400).json({ status: 400, message: "Both lat and lng required"});
+        return res.status(400).json({ status: 400, message: "Both lat and lng required."});
     }
 
     try {

@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLonerContext } from "../context/LonerContext";
 import { useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+
+import DayOfTheWeek from "./hikeDataComponents/DayOfTheWeek";
 
 const HikeById = () => {
     const [ activeHike, setActiveHike ] = useState({});
@@ -9,6 +12,8 @@ const HikeById = () => {
     const { hikeId } = useParams();
     const { state } = useLonerContext();
     const { localHikes } = state;
+    console.log(activeHike.populartimes);
+    console.log(forecast);
 
     useEffect(() => {
         const findActiveHike = localHikes.find((hike) => hike.place_id === hikeId);
@@ -30,16 +35,24 @@ const HikeById = () => {
         }
     }, [activeHike]);
 
+    const addToFavHandler = () => {
+
+    };
+
     return (
-        <HikeContainer>
-            <ElementWrapper>
-                {Object.keys(activeHike).length === 0 ? (
-                    <></>
-                ) : (            
+            <HikeContainer>
+                <ElementWrapper>            
                     <Image src={activeHike.photoURL} />                 
-                )}
-            </ElementWrapper>           
-        </HikeContainer>
+                </ElementWrapper> 
+                {activeHike.populartimes && 
+                <PopularTimesWrapper>
+                    {activeHike.populartimes.map((day) => (
+                        <DayOfTheWeek key={uuidv4()} day={day} busyness={activeHike.busyness} />
+                    ))}
+                </PopularTimesWrapper> 
+                }
+            <button onClick={addToFavHandler} >Add to favourites</button>         
+            </HikeContainer>
     )
 };
 
@@ -50,20 +63,32 @@ const HikeContainer = styled.div`
 
 const ElementWrapper = styled.div`
     display: flex;
-    background: rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.2);
     backdrop-filter: brightness(85%) blur(3px);
     padding: 2rem;
     border: 2px solid var(--text-color);
-    border-radius: 15px;
+    border-radius: 8px;
+`;
+
+const PopularTimesWrapper = styled.div`
+
+    display: flex;
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: brightness(85%) blur(3px);
+    padding: 2rem;
+    border: 2px solid var(--text-color);
+    border-radius: 8px;
 `;
 
 const Image = styled.img`
-    border: 1px solid var(--accent-color);
-    border-radius: 5px;
-    box-shadow: -3px 5px 25px 2px var(--text-color);
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0px 0px 15px 2px var(--text-color);
     width: 400px;
     height: 400px;
     object-fit: cover;
+    z-index: 1;
 `;
 
 export default HikeById;

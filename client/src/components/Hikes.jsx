@@ -3,57 +3,55 @@ import styled from "styled-components";
 
 const Hikes = ({ hike }) => {
     const navigate = useNavigate();
-    const { name, rating, photoURL, address, place_id, ratingQuant } = hike;
+    const { name, rating, photoURL, address, place_id, busyness, driveTimeToHike } = hike;
     
     const clickHandler = (e) => {
         navigate(`/hike/${place_id}`);
     };
 
     return (
-        <>
-            <HikeContainer onClick={clickHandler} >                
-                {photoURL ? (
-                    <Image src={photoURL} />
-                ) : (
-                    <p>Loading...</p>
-                )}
-                <TextContainer>  
-                    <TextTitle>{name}</TextTitle>                 
-                    <TextSection>Rating: <AccentSpan>{rating}</AccentSpan></TextSection>
-                    <TextSection>Total Ratings: <AccentSpan>{ratingQuant}</AccentSpan></TextSection>
-                    <TextSection>{address}</TextSection>
-                </TextContainer>
-            </HikeContainer>
-            
-        </>
+        <HikeContainer onClick={clickHandler} >
+            <Image src={photoURL} />                                
+            <TextContainer>  
+                <TextTitle>{name}</TextTitle>
+                <TextSection className="address">{address}</TextSection>               
+                <TextSection>Visitors in the last hour: <AccentSpan>{busyness}</AccentSpan></TextSection>
+                <TextSection>Drive time to trailhead: <AccentSpan>{driveTimeToHike}</AccentSpan></TextSection>
+                <TextSection>Rating: <AccentSpan>{rating}</AccentSpan></TextSection>
+            </TextContainer>
+        </HikeContainer>
     )
 };
 
 const HikeContainer = styled.button`
     display: flex;
-    flex-wrap: wrap;
-    background: rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    background: rgba(0, 0, 0, 0.2);
     backdrop-filter: brightness(85%) blur(3px);
-    padding: 1.5rem;
+    padding: 2rem;
     border: 2px solid var(--text-color);
-    border-radius: 15px;
+    border-radius: 8px;
 
     &:hover {
-        cursor: pointer;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: brightness(85%) blur(3px);
     }
 `;
 
 const TextContainer = styled.div`
+    box-sizing: border-box;
+    background: black;
+    box-shadow: 0px 0px 15px 2px var(--text-color);
     text-align: start;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem;
+    height: fit-content;
+    width: 350px;
+    padding: 15px 0 30px 15px;
+    border-radius: 0 0 5px 5px;
+    flex: 1;
 `;
 
 const TextTitle = styled.h1`
-    color: var(--secondary-color);
-    max-width: 300px;
+    color: var(--primary-color);
 `;
 
 const TextSection = styled.p`
@@ -61,21 +59,29 @@ const TextSection = styled.p`
     font-size: 1.2rem;
     color: var(--primary-color);
     opacity: 0.9;
-    margin: 5px;
+    margin: 0;
+    
+    &.address {
+        color: var(--light-accent-color);
+        margin: 1rem 0;
+    }
 `;
 
 const AccentSpan = styled.span`
-    color: var(--bold-accent-color);
+    color: var(--light-accent-color);
+    font-family: var(--body-font-family);
+    font-size: 1.2rem;
+    text-shadow: none;
+    margin: none;
 `;
 
 const Image = styled.img`
-    margin: 0.5rem;
-    border: 2px solid var(--text-color);
-    border-radius: 15px;
-    box-shadow: 0px 0px 15px 1px var(--text-color);
-    width: 200px;
-    height: 200px;
+    border-radius: 5px 5px 0 0;
+    box-shadow: 0px 0px 15px 2px var(--text-color);
+    width: 350px;
+    height: 350px;
     object-fit: cover;
+    z-index: 1;
 `;
 
 export default Hikes;

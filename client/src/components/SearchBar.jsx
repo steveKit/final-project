@@ -4,14 +4,18 @@ import { useLonerContext } from "../context/LonerContext";
 const SET_LOCAL_HIKES = "SET_LOCAL_HIKES";
 const SET_SEARCH_INPUT = "SET_SEARCH_INPUT";
 const SET_SEARCH_RADIUS = "SET_SEARCH_RADIUS";
+const SET_ERROR = "SET_ERROR";
 
 const SearchBar = ({ setLoading }) => {
     const { state, dispatch } = useLonerContext();
-    const { searchInput, searchRadius } = state;
+    const { searchInput, searchRadius, error } = state;
+
+    const placeholderText = error.message ? error.message : "Enter a location..."
     
     const handleInputchange = (e) => {
         dispatch({ type: SET_LOCAL_HIKES, payload: [] });
         dispatch({ type: SET_SEARCH_INPUT, payload: e.target.value });
+        dispatch({ type: SET_ERROR, payload: {} });
     };
 
     const handleRadiusChange = (e) => {
@@ -27,10 +31,17 @@ const SearchBar = ({ setLoading }) => {
             .then((data) => {
                 if (data.status === 200 && data.data) {
                     dispatch({ type: SET_LOCAL_HIKES, payload: data.data });
+                } else {
+                    dispatch({ type: SET_SEARCH_INPUT, payload: "" });
+                    dispatch({ type: SET_ERROR, payload: data });
                 }
             })
-            .catch((err) => console.error(err.message)
-        );
+            .catch((err) => {                
+                console.error(err);                
+            })
+            .finally(() => {
+                setLoading(false);
+            });
     };
 
     return (
@@ -38,9 +49,10 @@ const SearchBar = ({ setLoading }) => {
         <SearchBarContainer onSubmit={handleSubmit} >
             <SearchInput
                 type="text"
-                placeholder="Enter a location..."
+                placeholder={placeholderText}
                 value={searchInput}
                 onChange={handleInputchange}
+                className={error.message ? 'error' : ''}
                 autoFocus
             />
             <SearchRadius value={searchRadius} onChange={handleRadiusChange}>
@@ -76,12 +88,18 @@ const SearchInput = styled.input`
     box-sizing: border-box;
     background: none;
     min-width: 300px;
-    width: max-content;
+    width: fit-content;
     border: none;
     outline: none;
 
     ::placeholder {
         color: var(--secondary-color);
+    }
+
+    &.error::placeholder {
+        color: var(--bold-accent-color);
+        font-size: 1.4rem;
+        font-weight: 500;
     }
 `;
 
@@ -116,19 +134,11 @@ const Option = styled.option`
 `;
 
 const Submit = styled.button`
-    font-family: var(--body-font-family);
-    font-size: 1.2rem;
-    color: var(--light-accent-color);
-    opacity: 75%;
-    box-sizing: border-box;
     width: 70px;
-    background: none;       
     border: none;
-    transition: all 300ms ease;
 
     &:hover {
-        cursor: pointer;
-        color: var(--bold-accent-color);
+        background: none;
     }
 `;
 
