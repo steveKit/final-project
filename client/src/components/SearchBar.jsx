@@ -9,13 +9,19 @@ const SET_ERROR = "SET_ERROR";
 const SearchBar = ({ setLoading }) => {
     const { state, dispatch } = useLonerContext();
     const { searchInput, searchRadius, error } = state;
-
     const placeholderText = error.message ? error.message : "Enter a location..."
-    
-    const handleInputchange = (e) => {
-        dispatch({ type: SET_LOCAL_HIKES, payload: [] });
+;
+    const handleInputchange = (e) => {   
+        window.scrollTo({ behavior: "smooth", top: 0 });    
         dispatch({ type: SET_SEARCH_INPUT, payload: e.target.value });
-        dispatch({ type: SET_ERROR, payload: {} });
+
+        if (error && error.hasOwnProperty('message')) {
+            dispatch({ type: SET_ERROR, payload: {} });
+        };
+                
+        setTimeout(() => {
+            dispatch({ type: SET_LOCAL_HIKES, payload: [] });
+        }, 400);
     };
 
     const handleRadiusChange = (e) => {
@@ -68,6 +74,7 @@ const SearchBar = ({ setLoading }) => {
 };
 
 const SearchBarContainer = styled.form`
+    box-shadow: inset 2px 4px 5px 1px black;
     background: rgba(0, 0, 0, 0.1);
     backdrop-filter: brightness(75%) blur(5px);
     z-index: 10;
@@ -81,8 +88,10 @@ const SearchBarContainer = styled.form`
 `;
 
 const SearchInput = styled.input`
+    text-shadow: 3px 3px 1px black;
     font-family: var(--body-font-family);
     font-size: 1.2rem;
+    white-space: normal;
     color: var(--primary-color);
     opacity: 75%;
     box-sizing: border-box;
@@ -104,6 +113,7 @@ const SearchInput = styled.input`
 `;
 
 const SearchRadius = styled.select`
+    text-shadow: 3px 3px 1px black;
     font-family: var(--body-font-family);
     font-size: 1.2rem;
     color: var(--primary-color);
@@ -134,10 +144,13 @@ const Option = styled.option`
 `;
 
 const Submit = styled.button`
+    text-shadow: 3px 3px 1px black;
     width: 70px;
     border: none;
+    box-shadow: none;
 
     &:hover {
+        box-shadow: none;
         background: none;
     }
 `;

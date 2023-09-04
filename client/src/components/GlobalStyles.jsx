@@ -103,6 +103,7 @@ export default  createGlobalStyle`
         border-spacing: 0;
     }
     button {
+        box-shadow: 2px 4px 5px 1px rgb(49, 59, 71);
         font-family: var(--body-font-family);
         font-size: 1.2rem;
         color: var(--light-accent-color);
@@ -118,7 +119,9 @@ export default  createGlobalStyle`
         &:hover {
             cursor: pointer;
             color: var(--bold-accent-color);
-            background-color: var(--text-color);
+            text-shadow: 3px 3px 1px black;
+            background-color: rgb(49, 59, 71);
+            box-shadow: inset 2px 4px 5px 1px var(--text-color);
         }
     }
     

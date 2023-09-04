@@ -31,10 +31,12 @@ const HikeContainer = styled.button`
     padding: 2rem;
     border: 2px solid var(--text-color);
     border-radius: 8px;
+    transition: all ease 200ms;
 
     &:hover {
         background: rgba(0, 0, 0, 0.7);
         backdrop-filter: brightness(85%) blur(3px);
+        box-shadow: inset 2px 4px 5px 1px black;
     }
 `;
 

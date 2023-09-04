@@ -11,7 +11,7 @@ const HikeResults = () => {
 
     sortedHikes.sort((a, b) => {
         if (activeButton === "busyness") {
-            return a.busyness - b.busyness;
+            return a.busyness[0].data - b.busyness[0].data;
         } else if (activeButton === "distance") {
             const distanceA = parseFloat(a.driveTimeToHike.split(' ')[0]);
             const distanceB = parseFloat(b.driveTimeToHike.split(' ')[0]);
@@ -97,18 +97,23 @@ const Button = styled.button`
     }
     
     &.active {
+        text-shadow: 3px 3px 1px rgb(31, 31, 31);
         color: var(--bold-accent-color);
-        background-color: var(--text-color);
+        background-color: rgb(49, 59, 71);
+        box-shadow: inset 2px 4px 5px 1px var(--text-color);
     }
 
     &:hover {
+        text-shadow: 3px 3px 1px rgb(113, 113, 113);
         color: var(--primary-color);
         background: rgba(243, 247, 244, 0.5);
     }
 
     &:hover.active {
         color: var(--bold-accent-color);
-        background-color: var(--text-color);
+        background-color: rgb(49, 59, 71);
+        text-shadow: 3px 3px 1px rgb(31, 31, 31);
+        box-shadow: inset 2px 4px 5px 1px var(--text-color);
     }
 `;
 

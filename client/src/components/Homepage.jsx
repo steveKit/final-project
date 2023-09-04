@@ -9,13 +9,11 @@ import LoadingAnimation from "./LoadingAnimation";
 const Homepage = () => {
     const [ loading, setLoading ] = useState(false);
     const { state } = useLonerContext();
-    const { localHikes, error } = state;
+    const { localHikes } = state;
     const hikeResultsRef = useRef(null);
 
     useEffect(() => {
-        if (localHikes.length === 0) {            
-            window.scrollTo({ behavior: "smooth", top: 0 });
-        } else {
+        if (localHikes.length > 0) {            
             hikeResultsRef.current.scrollIntoView({ behavior: "smooth", inline: "nearest" });
         }
     }, [localHikes]);

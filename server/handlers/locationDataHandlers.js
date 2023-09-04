@@ -10,7 +10,7 @@ const getHikes = async (req, res) => {
     const { searchTerm, radius } = req.query;
 
     if (!searchTerm || !radius) {
-        return res.status(400).json({ status: 400, message: "Both searchTerm and searchRadius required"});
+        return res.status(400).json({ status: 400, message: "Location & radius required"});
     };
 
     try {
