@@ -43,7 +43,7 @@ const Wrapper = styled.div`
     height: 80vh;
 `;
 
-const TitleText = styled.h1`    
+const TitleText = styled.h1` 
     font-family: var(--heading-font-family);
     font-weight: 500;
     font-size: 30vw;

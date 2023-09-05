@@ -1,15 +1,14 @@
 "use strict";
 require("dotenv").config();
+const axios = require("axios");
 const { MongoClient, ObjectId } = require("mongodb");
-const cloudinary = require('cloudinary').v2;
 const {
     MONGO_URI,
-    CLOUDINARY_KEY,
-    CLOUDINARY_SECRET,
-    CLOUDINARY_NAME
 } = process.env;
 
 const { getPopularTimes, getBusynessNow } = require("../scripts/populartimesScripts");
+
+const { GOOGLE_URI } = process.env;
 
 //mongodb
 const options = {
@@ -18,13 +17,6 @@ const options = {
 };
 const client = new MongoClient(MONGO_URI, options);
 const usersCollection = client.db('aloner').collection('users');
-
-//cloudinary
-cloudinary.config({ 
-    cloud_name: CLOUDINARY_NAME, 
-    api_key: CLOUDINARY_KEY, 
-    api_secret: CLOUDINARY_SECRET 
-});
 
 const getUser = async (req, res) => {
     const { id } = req.params;
@@ -46,44 +38,85 @@ const getUser = async (req, res) => {
     }
 };
 
-const getUserHike = async (req, res) => {
-    const { id } = req.params;
-    const userId = new ObjectId(id);
+const getUserHikes = async (req, res) => {
+    const { userHikes } = req.body;
+
+    if (!userHikes) {
+        return res.status(400).json({ status: 400, message: "Hike id required."});
+    };
 
     try {
-        await client.connect();            
-        const user = await usersCollection.findOne({ _id: userId });
+        const hikeDetails = await Promise.all(userHikes.map( async (hike) => {
 
-        if (user) {
-            if (user.userHikes && user.userHikes.length > 0) {
-                const userHikesResults = user.userHikes.map((hike) => {
-                    const populartimesData = getPopularTimes();
-                    const busynessData = getBusynessNow();
+            const response = await axios.get('https://maps.googleapis.com/maps/api/place/details/json', {
+                params: {
+                    place_id: hike,
+                    key: GOOGLE_URI,
+                },
+                
+            });
+            const hikeDetails = response.data.result;
 
+            return {
+                name: hikeDetails.name,
+                address: hikeDetails.vicinity,
+                rating: hikeDetails.rating,
+                ratingQuant: hikeDetails.user_ratings_total,
+                photos: hikeDetails.photos,
+                place_id: hikeDetails.place_id,
+                location: hikeDetails.geometry.location,
+            };
+        }));
+
+        if (hikeDetails) {
+            const addPhotos = await Promise.all(hikeDetails.map( async (hike) => {
+
+                const photoRef = hike.photos ? hike.photos[0].photo_reference : 'AUacShi6l6hVIvY3H0UKdqfmnhEA6Mzfc12xVuj8sCnsNv2WKuMWpROIy4owHNHTLIeAs_OzvgD-BZjo8igxiaGF8vlPttIV8fEVnggbSqUx1OrIljzMHVu9-QB3twDBT230DSOobQAhjAATVoEnCB7-MHg2LljmX1pRdBi5D7BbSo8_Qgi7';
+                const response = await axios.get('https://maps.googleapis.com/maps/api/place/photo', {
+                    params: {
+                        maxwidth: 400,
+                        photo_reference: photoRef,
+                        key: GOOGLE_URI,
+                    },
+                });
+                const hikePhotoUrl = response.request.res.responseUrl;
+                const { photos, ...hikeWithoutPhotos } = hike;
+                return {
+                    ...hikeWithoutPhotos,
+                    photoUrl: hikePhotoUrl,
+                };
+            }));
+
+            if (addPhotos) {
+
+                const addData = await Promise.all(addPhotos.map( async (hike) => {
+
+                    const populartimes = getPopularTimes();
+                    const busyness = getBusynessNow();
+                    
                     return {
                         ...hike,
-                        populartimes: populartimesData,
-                        busyness: busynessData,
+                        busyness: busyness,
+                        populartimes: populartimes,
                     };
-                });
-                
-                res.status(200).json({ status: 200, data: userHikesResults });
+                }));
+                console.log(addData);
+                res.status(200).json({ ststus: 200, data: addData });
             } else {
-                res.status(404).json({ status: 404, message: "User hikes not found" });
+                res.status(404).json({ ststus: 404, message: "Error appending hike photo." });
             }
         
         } else {
-            res.status(404).json({ status: 404, message: "User not found"});
+            res.status(404).json({ ststus: 404, message: "Error retrieving hike details." });
         }
-    } catch (error) {
-        res.status(500).json({ status:500, message: error.message });
-    } finally {
-        client.close();
+        
+    } catch (err) {
+        res.status(500).json({ status: 500, message: err.message });
     }
 };
 
 const addUserHike = async (req, res) => {
-    const { id, newHike } = req.body;
+    const { id, hikeId } = req.params;
     const userId = new ObjectId(id);
 
     try {
@@ -92,53 +125,28 @@ const addUserHike = async (req, res) => {
 
         if (user) {
             const updateUserHikes = user.userHikes ? user.userHikes : new Array;
-            updateUserHikes.push(newHike);
-            const addHike = await usersCollection.updateOne(
-                { _id: userId },
-                { $set: { userHikes: updateUserHikes } }
-            );
-            
-            if (addHike.modifiedCount === 1) {
-                res.status(201).json({ status: 201, message: "User hike added successfully" });
+
+            if (!updateUserHikes.includes(hikeId)) {
+                updateUserHikes.push(hikeId);
+                const addHike = await usersCollection.updateOne(
+                    { _id: userId },
+                    { $set: { userHikes: updateUserHikes } }
+                );
+                
+                if (addHike.modifiedCount === 1) {
+                    res.status(201).json({ status: 201, message: "User hike added successfully" });
+                } else {
+                    throw new Error('Failed to add user hike');
+                }
             } else {
-                throw new Error('Failed to add user hike');
-            }            
+                res.status(400).json({ status: 400, message: "Hike already in user hikes" });
+            }
+                        
         } else {
             res.status(404).json({ status: 404, message: "User not found"});
         }
     } catch (error) {
         res.status(500).json({ status:500, message: error.message });
-    } finally {
-        client.close();
-    }
-};
-
-//placeholder - test
-const addUserPhoto = async (req, res) => {
-    const { id } = req.params;
-    const userId = new ObjectId(id);
-
-    try {
-        const uploadedImage = await cloudinary.v2.uploader.upload(req.file.path, {
-            folder: 'Loner-profile-photos',
-            public_id: id,
-        });
-    
-        const imageUrl = uploadedImage.secure_url;
-
-        await client.connect();
-        const result = await usersCollection.updateOne(
-            { _id: userId },
-            { $set: { profilePhoto: imageUrl } }
-        );
-
-        if (result.modifiedCount === 1) {
-            res.status(200).json({ status: 200, message: "Profile photo added successfully" });
-        } else {
-            res.status(404).json({ status: 404, message: "User not found" });
-        }
-    } catch (error) {
-        res.status(500).json({ status: 500, message: error.message });
     } finally {
         client.close();
     }
@@ -164,27 +172,27 @@ const deleteUser = async (req, res) => {
     }
 };
 
-const deleteFavHike = async (req, res) => {
+const deleteUserHike = async (req, res) => {
     const { id, hikeId } = req.params;
     const userId = new ObjectId(id);
-
+    console.log("hitting");
     try {
         await client.connect();           
         const user = await usersCollection.findOne({ _id: userId });
 
         if (user) {
             if (user.userHikes) {
-                const updateUserHikes = user.userHikes.filter(hike => hike.place_id !== hikeId);
-
+                const updateUserHikes = user.userHikes.filter(hike => hike !== hikeId);
+                
                 const removeHike = await usersCollection.updateOne(
                     { _id: userId },
                     { $set: { userHikes: updateUserHikes } }
                 );
-
+                
                 if (removeHike.modifiedCount === 1) {
                     res.status(200).json({ status: 200, message: "User hike deleted successfully" });
                 } else {
-                    throw new Error('Failed to add user hike');
+                    throw new Error('Failed to delete user hike');
                 } 
             } else {
                 res.status(404).json({ status: 404, message: "Hike not found" });
@@ -201,9 +209,8 @@ const deleteFavHike = async (req, res) => {
 
 module.exports = {
     getUser,
-    getUserHike,
+    getUserHikes,
     addUserHike,
-    addUserPhoto,
     deleteUser,
-    deleteFavHike
+    deleteUserHike
 };

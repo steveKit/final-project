@@ -5,7 +5,7 @@ import GlobalStyles from "./components/GlobalStyles";
 import Header from "./components/Header";
 import Homepage from "./components/Homepage";
 import HikeById from "./components/HikeById";
-import User from "./components/User";
+import Favorites from "./components/Favorites";
 
 const App = () => {
   const { user, isAuthenticated, loginWithRedirect, logout } = useAuth0();
@@ -29,8 +29,8 @@ const App = () => {
           element={<HikeById />}
         />
         <Route
-          path="/user"
-          element={<User />}
+          path="/favorites"
+          element={<Favorites />}
         />
       </Routes>          
     </BrowserRouter>

@@ -45,6 +45,10 @@ const Time = styled.p`
     left: -1.4rem;
     width: 0;
     z-index: 10;
+
+    @media screen and (max-width: 630px) {
+        opacity: 0;
+    }
 `;
 
 export default BusynessByHour;

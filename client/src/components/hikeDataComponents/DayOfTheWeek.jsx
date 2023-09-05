@@ -26,12 +26,20 @@ const Wrapper = styled.div`
     padding: 1.5rem 1.5rem 4rem;
     border: 2px solid var(--text-color);
     border-radius: 5px;
+
+    @media screen and (max-width: 479) {
+        overflow: hidden;
+    }
 `;
 
 const Title = styled.h1`
     text-shadow: 3px 3px 2px var(--text-color);
     color: var(--secondary-color);
     margin-bottom: 1rem;
+
+    @media screen and (max-width: 725px) {
+        text-align: center;
+    }
 `;
 
 const BusynessGraph = styled.div`
@@ -39,6 +47,7 @@ const BusynessGraph = styled.div`
     display: flex;
     flex-direction: row;
     align-items: flex-end;
+    max-width: 90vw;
     width: fit-content;
     height: 100px;
     border: 1px solid var(--text-color);
@@ -61,6 +70,9 @@ const TimeContainer = styled.div`
     border-top: 1px solid var(--text-color);
     border-radius: 0 0 5px 5px;
 
+    @media screen and (max-width: 640) {
+        z-index: 10;
+    }
 `;
 
 export default DayOfTheWeek;

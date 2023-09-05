@@ -19,8 +19,8 @@ const Header = ({ isAuthenticated, login, logout }) => {
             
             {isAuthenticated ? (
                     <LogoutContainer>
-                        <Link to="/user" >
-                            <button>Profile</button>
+                        <Link to="/favorites" >
+                            <button>Favorites</button>
                         </Link>
                         <button onClick={logout}>Logout</button>
                     </LogoutContainer>
@@ -53,6 +53,7 @@ const Logo = styled.img`
     width: 75px;
     height: 75px;
     opacity: 75%;
+    border-radius: 50px;
 `;
 
 const LogoutContainer = styled.div`
