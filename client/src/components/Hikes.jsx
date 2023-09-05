@@ -4,19 +4,21 @@ import styled from "styled-components";
 const Hikes = ({ hike }) => {
     const navigate = useNavigate();
     const { name, rating, photoURL, address, place_id, busyness, driveTimeToHike } = hike;
-    
+
     const clickHandler = (e) => {
         navigate(`/hike/${place_id}`);
     };
 
     return (
         <HikeContainer onClick={clickHandler} >
-            <Image src={photoURL} />                                
+            <Image src={photoURL} />                                           
             <TextContainer>  
                 <TextTitle>{name}</TextTitle>
                 <TextSection className="address">{address}</TextSection>               
                 <TextSection>Visitors in the last hour: <AccentSpan>{busyness[0].data}</AccentSpan></TextSection>
-                <TextSection>Drive time to trailhead: <AccentSpan>{driveTimeToHike}</AccentSpan></TextSection>
+                {driveTimeToHike &&
+                    <TextSection>Drive time to trailhead: <AccentSpan>{driveTimeToHike}</AccentSpan></TextSection>
+                }
                 <TextSection>Rating: <AccentSpan>{rating}</AccentSpan></TextSection>
             </TextContainer>
         </HikeContainer>

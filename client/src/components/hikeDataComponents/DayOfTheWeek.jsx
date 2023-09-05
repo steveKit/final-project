@@ -23,12 +23,14 @@ const Wrapper = styled.div`
     flex-direction: column;
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: brightness(85%) blur(3px);
+
     padding: 1.5rem 1.5rem 4rem;
     border: 2px solid var(--text-color);
     border-radius: 5px;
+    max-width: 96%;
 
     @media screen and (max-width: 479) {
-        overflow: hidden;
+        flex-direction: row;
     }
 `;
 

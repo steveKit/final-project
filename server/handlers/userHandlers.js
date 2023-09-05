@@ -39,14 +39,14 @@ const getUser = async (req, res) => {
 };
 
 const getUserHikes = async (req, res) => {
-    const { userHikes } = req.body;
+    const { hikeArray } = req.body;
 
-    if (!userHikes) {
+    if (!hikeArray) {
         return res.status(400).json({ status: 400, message: "Hike id required."});
     };
 
     try {
-        const hikeDetails = await Promise.all(userHikes.map( async (hike) => {
+        const hikeDetails = await Promise.all(hikeArray.map( async (hike) => {
 
             const response = await axios.get('https://maps.googleapis.com/maps/api/place/details/json', {
                 params: {
@@ -62,6 +62,7 @@ const getUserHikes = async (req, res) => {
                 address: hikeDetails.vicinity,
                 rating: hikeDetails.rating,
                 ratingQuant: hikeDetails.user_ratings_total,
+                reviews: hikeDetails.reviews,
                 photos: hikeDetails.photos,
                 place_id: hikeDetails.place_id,
                 location: hikeDetails.geometry.location,
@@ -74,16 +75,17 @@ const getUserHikes = async (req, res) => {
                 const photoRef = hike.photos ? hike.photos[0].photo_reference : 'AUacShi6l6hVIvY3H0UKdqfmnhEA6Mzfc12xVuj8sCnsNv2WKuMWpROIy4owHNHTLIeAs_OzvgD-BZjo8igxiaGF8vlPttIV8fEVnggbSqUx1OrIljzMHVu9-QB3twDBT230DSOobQAhjAATVoEnCB7-MHg2LljmX1pRdBi5D7BbSo8_Qgi7';
                 const response = await axios.get('https://maps.googleapis.com/maps/api/place/photo', {
                     params: {
-                        maxwidth: 400,
+                        maxwidth: 600,
                         photo_reference: photoRef,
                         key: GOOGLE_URI,
                     },
                 });
                 const hikePhotoUrl = response.request.res.responseUrl;
                 const { photos, ...hikeWithoutPhotos } = hike;
+                
                 return {
                     ...hikeWithoutPhotos,
-                    photoUrl: hikePhotoUrl,
+                    photoURL: hikePhotoUrl,
                 };
             }));
 
@@ -100,8 +102,7 @@ const getUserHikes = async (req, res) => {
                         populartimes: populartimes,
                     };
                 }));
-                console.log(addData);
-                res.status(200).json({ ststus: 200, data: addData });
+                res.status(200).json({ status: 200, data: addData });
             } else {
                 res.status(404).json({ ststus: 404, message: "Error appending hike photo." });
             }
@@ -175,7 +176,7 @@ const deleteUser = async (req, res) => {
 const deleteUserHike = async (req, res) => {
     const { id, hikeId } = req.params;
     const userId = new ObjectId(id);
-    console.log("hitting");
+
     try {
         await client.connect();           
         const user = await usersCollection.findOne({ _id: userId });

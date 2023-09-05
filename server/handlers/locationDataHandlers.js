@@ -48,11 +48,21 @@ const getHikes = async (req, res) => {
                     const photoRef = hike.photos ? hike.photos[0].photo_reference : 'AUacShi6l6hVIvY3H0UKdqfmnhEA6Mzfc12xVuj8sCnsNv2WKuMWpROIy4owHNHTLIeAs_OzvgD-BZjo8igxiaGF8vlPttIV8fEVnggbSqUx1OrIljzMHVu9-QB3twDBT230DSOobQAhjAATVoEnCB7-MHg2LljmX1pRdBi5D7BbSo8_Qgi7';
                     const hikePhotoURLRef = await axios.get('https://maps.googleapis.com/maps/api/place/photo', {
                         params: {
-                            maxwidth: 400,
+                            maxwidth: 600,
                             photo_reference: photoRef,
                             key: GOOGLE_URI,
                         },
                     });
+
+                    //get reviews
+                    const getHikeReviews = await axios.get('https://maps.googleapis.com/maps/api/place/details/json', {
+                        params: {
+                            place_id: hike.place_id,
+                            key: GOOGLE_URI,
+                        },
+                    });
+                    
+                    const hikeReviews = getHikeReviews.data.result.reviews;
 
                     //get distance & drive time to hike
                     const distanceToTrailHead = await axios.get('https://maps.googleapis.com/maps/api/distancematrix/json', {
@@ -67,12 +77,13 @@ const getHikes = async (req, res) => {
                     const hikePhotoURL = hikePhotoURLRef.request.res.responseUrl;
                     const populartimes = getPopularTimes();
                     const busyness = getBusynessNow();
-                        
+
                     return ({
                         name: hike.name,
                         address: hike.vicinity,
                         rating: hike.rating,
                         ratingQuant: hike.user_ratings_total,
+                        reviews: hikeReviews,
                         photoURL: hikePhotoURL,
                         place_id: hike.place_id,
                         location: hike.geometry.location, 

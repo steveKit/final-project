@@ -1,27 +1,80 @@
 import styled from "styled-components";
 
+const Weather = ({ activeHike, forecast }) => {
+    const { name } = activeHike;
+    const { current } = forecast;
+    const { condition, temp_c, feelslike_c, humidity, uv, precip_mm, wind_kph, wind_dir } = current;
 
-const Weather = () => {
-    
     return (
-        <Wrapper>
-            <p>weather!</p>
-        </Wrapper>
+        <>
+            <TitleContainer>
+                <TitleText>{name}</TitleText>
+                {current &&
+                        <Image src={condition.icon} alt="Weather icon" />
+                }
+            </TitleContainer>            
+            <SubtitleText>Current Weather</SubtitleText>
+            <Line />
+            <WeatherContainer>               
+                <div>
+                    <TextContent>Right now, it's <AccentSpan>{temp_c}°c</AccentSpan> feels like <AccentSpan>{feelslike_c}°c</AccentSpan></TextContent>
+                    <TextContent>Expect <AccentSpan>{precip_mm} mm</AccentSpan> of rain</TextContent>
+                    <TextContent><AccentSpan>{humidity}%</AccentSpan> humidity</TextContent>
+                    <TextContent><AccentSpan>{wind_kph} kph</AccentSpan> wind from the <AccentSpan>{wind_dir}</AccentSpan></TextContent>
+                    <TextContent>UV index of <AccentSpan>{uv}</AccentSpan></TextContent>                   
+                </div>               
+            </WeatherContainer>
+        </>
         
     )
 };
 
-const Wrapper = styled.div`
-    box-sizing: border-box;
+const TitleContainer = styled.div`
     display: flex;
-    flex-direction: column;
-    box-shadow:2px 4px 5px 1px var(--text-color);
-    background: rgba(0, 0, 0, 0.2);
-    backdrop-filter: brightness(85%) blur(3px);
-    padding: 2rem;
-    border: 2px solid var(--text-color);
-    border-radius: 0 0 8px 8px;
-    width: 400px;
+    justify-content: space-between;
+`;
+
+const TitleText = styled.h1`
+    color: var(--secondary-color);
+    font-size: 2rem;
+`;
+
+const SubtitleText = styled.h3`
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin: 1rem 1rem 0;
+`;
+
+const Line = styled.hr`
+    width: 100%;
+    margin-bottom: 2rem;
+`;
+
+const TextContent = styled.p`
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 1px 0;
+`;
+
+const AccentSpan = styled.span`
+    color: var(--light-accent-color);
+    font-family: var(--body-font-family);
+    font-size: 1.3rem;
+    text-shadow: none;
+    margin: none;
+`;
+
+const WeatherContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+`;
+
+
+const Image = styled.img`
+    width: 100px;
+    height: 100px;
+
 `;
 
 export default Weather;

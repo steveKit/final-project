@@ -74,7 +74,7 @@ export default  createGlobalStyle`
     }
     h1 {
         font-family: var(--heading-font-family);
-        font-size: 2rem;
+        font-size: 1.5rem;
     }
     a {
         color: var(--primary-color);
@@ -124,5 +124,4 @@ export default  createGlobalStyle`
             box-shadow: inset 2px 4px 5px 1px var(--text-color);
         }
     }
-    
 `;

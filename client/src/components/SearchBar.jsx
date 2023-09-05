@@ -74,7 +74,7 @@ const SearchBar = ({ setLoading }) => {
 };
 
 const SearchBarContainer = styled.form`
-    box-shadow: inset 2px 4px 5px 1px black;
+    box-shadow: inset 2px 4px 5px 1px rgb(27, 27, 27);
     background: rgba(0, 0, 0, 0.1);
     backdrop-filter: brightness(75%) blur(5px);
     z-index: 10;

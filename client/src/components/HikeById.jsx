@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useLonerContext } from "../context/LonerContext";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 import DayOfTheWeek from "./hikeDataComponents/DayOfTheWeek";
 import Weather from "./hikeDataComponents/Weather";
+import LoadingAnimation from "./LoadingAnimation";
+import Reviews from "./hikeDataComponents/Reviews";
 
 const SET_USER = "SET_USER";
 
@@ -14,17 +16,23 @@ const HikeById = () => {
     const [ forecast, setForecast ] = useState({});
     const { hikeId } = useParams();
     const { state, dispatch } = useLonerContext();
-    const { localHikes, userObj } = state;
+    const { localHikes, userObj, userHikes } = state;
+    const navigate = useNavigate();
 
     useEffect(() => {
-
-    }, [userObj])
+        window.scrollTo(0, 0)
+    }, [])
 
     useEffect(() => {
-        const findActiveHike = localHikes.find((hike) => hike.place_id === hikeId);
-        setActiveHike(findActiveHike);
+        if (userHikes && userHikes.some(hike => hike.place_id === hikeId)) {
+            const findActiveHike = userHikes.find((hike) => hike.place_id === hikeId);
+            setActiveHike(findActiveHike);
+        } else {
+            const findActiveHike = localHikes.find((hike) => hike.place_id === hikeId);
+            setActiveHike(findActiveHike);
+        }
     }, []); 
-    
+
     useEffect(() => {
         if (activeHike.location) {
             const { lat, lng } = activeHike.location;
@@ -41,7 +49,7 @@ const HikeById = () => {
     }, [activeHike]);
 
     const onClickHandler = (e) => {
-        if (userObj && e.target.innerText === "Remove from Favorites") {           
+        if (userObj && e.target.classList.contains("remove")) {           
             fetch(`/api/delete-user-hike/${userObj._id}/${activeHike.place_id}`, {
                 method: "DELETE",
             })
@@ -60,17 +68,23 @@ const HikeById = () => {
                         dispatch({ type: SET_USER, payload: updateUserObj });
                     }
             })
-        } else if (userObj && e.target.innerText == "Add to favorites") {
+        } else if (userObj && e.target.classList.contains("add")) {
             fetch(`/api/add-user-hike/${userObj._id}/${activeHike.place_id}`, {
                 method: "POST",
             })
                 .then((res) => res.json())
                 .then((data) => {
                     if (data.status === 201) {
-                        const updateUserObj = {
-                            ...userObj,
-                            userHikes: [...userObj.userHikes, activeHike.place_id],
-                        };
+
+                        const updateUserObj = userObj.userHikes
+                            ? {
+                                ...userObj,
+                                userHikes: [...userObj.userHikes, activeHike.place_id],
+                            } : {
+                                ...userObj,
+                                userHikes: [activeHike.place_id],
+                            };
+
                         dispatch({ type: SET_USER, payload: updateUserObj });
                     }
             })
@@ -78,29 +92,62 @@ const HikeById = () => {
         }
     };
 
+    console.log(userHikes);
+
     return (
         <HikeContainer>
             <ElementWrapper>
-                {userObj ? (
-                    <Button onClick={onClickHandler} >
-                    {userObj.userHikes.includes(activeHike.place_id)
-                        ? "Remove from Favorites"
-                        : "Add to favorites"
+                {userObj
+                    ? (
+                        userHikes && userObj.userHikes.includes(activeHike.place_id)
+                            ? (
+                                <Button 
+                                    onClick={onClickHandler}
+                                    className="remove"
+                                >
+                                Remove from favorites
+                                </Button>
+                            ) : (
+                                <Button 
+                                    onClick={onClickHandler}
+                                    className="add"
+                                >
+                                Add to favorites
+                                </Button>
+                            )
+                    ) : (
+                        <Button className="notActive" >Login to add to favorites</Button> 
+                )}   
+                <Image src={activeHike.photoURL} />                                   
+                <ReviewWrapper>
+                    {forecast.current
+                        ? (
+                            <Weather activeHike={activeHike} forecast={forecast} />
+                        ) : (
+                            <LoadingAnimation />
+                    )}
+                    <SubtitleText>Reviews</SubtitleText>
+                    <Line />
+                    {activeHike.reviews && 
+                        activeHike.reviews.map((review) => (
+                            <Reviews key={uuidv4()} review={review} />
+                        ))
                     }
-                </Button>
-                ) : (
-                    <Button onClick={onClickHandler} >Login to add favorites</Button> 
-                )}
-                <Image src={activeHike.photoURL} />
-                <Weather />               
+                </ReviewWrapper>                                                     
             </ElementWrapper> 
             {activeHike.populartimes && 
                 <PopularTimesWrapper>                     
                     {activeHike.populartimes.map((day) => (
                         <DayOfTheWeek key={uuidv4()} day={day} busyness={activeHike.busyness[0]} />
                     ))}
+                    <Button
+                        className="back"
+                        onClick={() => navigate(-1)}
+                    >
+                        Go back
+                    </Button>
                 </PopularTimesWrapper> 
-            }                    
+            }                           
         </HikeContainer>
     )
 };
@@ -110,7 +157,6 @@ const HikeContainer = styled.div`
     flex-wrap: wrap;
     justify-content: center;;
     margin: 2rem;
-    height: 100vh;
 `;
 
 const ElementWrapper = styled.div`
@@ -124,9 +170,10 @@ const ElementWrapper = styled.div`
     margin-bottom: 4rem;
 `;
 
+
 const PopularTimesWrapper = styled.div`
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column;
     gap: 1rem;
     margin: 0 1rem 4rem;
 `;
@@ -134,24 +181,71 @@ const PopularTimesWrapper = styled.div`
 const Image = styled.img`
     box-sizing: border-box;
     border-radius: 5px 5px 0 0;
-    box-shadow:2px 4px 5px 1px var(--text-color);
+    box-shadow: 0px 0px 15px 2px var(--text-color);
     border: 2px solid var(--text-color);
-    width: 400px;
-    height: 400px;
+    border-bottom: none;
+    width: 600px;
+    height: 600px;
     object-fit: cover;
     z-index: 1;
+
+    @media screen and (max-width: 550) {
+        width: 400px;
+        height: 400px;
+    }
 `;
 
 const Button = styled.button`
     box-shadow: 2px 4px 5px 1px rgb(49, 59, 71);
     border: 1px solid var(--secondary-color);
+    border-radius: 5px;
     background-color: var(--text-color);
-    width: 100%;
-    margin-bottom: 2rem;
+    width: 600px;
+    padding: 1rem;
+    margin: 0 0 1rem 0;
 
     &:hover {
         color: var(--primary-color);
     }
+
+    &.notActive:hover {
+        box-shadow: 2px 4px 5px 1px rgb(49, 59, 71);
+        background-color: var(--text-color);
+        color: var(--light-accent-color);
+        text-shadow: none;
+        cursor: default;
+    }
+
+    &.back {
+        width: 100%;
+        box-shadow: none;
+
+    }
+`;
+
+const SubtitleText = styled.h3`
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    margin: 3rem 1rem 0;
+`;
+
+const Line = styled.hr`
+    width: 100%;
+    margin-bottom: 2rem;
+`;
+
+const ReviewWrapper = styled.div`
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 0px 15px 2px var(--text-color);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: brightness(85%) blur(3px);
+    padding: 2rem;
+    border: 2px solid var(--text-color);
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    width: 600px;
 `;
 
 export default HikeById;

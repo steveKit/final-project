@@ -9,7 +9,7 @@ import LoadingAnimation from "./LoadingAnimation";
 const Homepage = () => {
     const [ loading, setLoading ] = useState(false);
     const { state } = useLonerContext();
-    const { localHikes } = state;
+    const { localHikes, userHikes } = state;
     const hikeResultsRef = useRef(null);
 
     useEffect(() => {
