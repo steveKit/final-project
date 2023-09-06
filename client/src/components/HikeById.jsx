@@ -92,8 +92,6 @@ const HikeById = () => {
         }
     };
 
-    console.log(userHikes);
-
     return (
         <HikeContainer>
             <ElementWrapper>

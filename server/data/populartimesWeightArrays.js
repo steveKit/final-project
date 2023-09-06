@@ -1,8 +1,8 @@
-const lowestWeights = [5, 10];
+const lowestWeights = [5, 8, 10];
 const lowWeights = [20, 25, 30];
 const midWeights = [40, 45, 50, 55, 60, 65];
-const highWeights = [70, 75, 80, 85, 90];
-const variableMidDayWeights = [20, 40, 60, 80];
+const highWeights = [70, 75, 80, 80, 85, 90];
+const variableMidDayWeights = [20, 30, 35, 40, 45, 60 ];
 
 const setWeight = (weightArray) => {
     return weightArray[Math.floor(Math.random() * weightArray.length)];
