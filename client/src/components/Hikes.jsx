@@ -9,7 +9,7 @@ const Hikes = ({ hike }) => {
         navigate(`/hike/${place_id}`);
     };
 
-    return (
+    return ( 
         <HikeContainer onClick={clickHandler} >
             <Image src={photoURL} />                                           
             <TextContainer>  

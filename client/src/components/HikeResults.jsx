@@ -79,7 +79,7 @@ const ButtonContainer = styled.div`
 const Button = styled.button`
     color: var(--text-color);
     font-weight: 500;
-    background: rgba(243, 247, 244, 0.7);
+    background: rgba(243, 247, 244, 0.9);
     backdrop-filter: brightness(40%) blur(5px);
     border-radius: 0px 25px 25px 0px;
     border-left: none;

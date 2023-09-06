@@ -53,7 +53,6 @@ const BusynessGraph = styled.div`
     height: 100px;
     border: 1px solid var(--text-color);
     border-radius: 5px 5px 0 0;
-    gap: 2.5px;
     background: rgba(255, 255, 255, 0.8);
     backdrop-filter: brightness(85%) blur(3px);
     box-shadow:2px 4px 5px 1px var(--text-color);

@@ -3,10 +3,11 @@ import { useState } from "react";
 
 const BusynessByHour = ({ hour, busyness, day, index }) => {
     const [ isHovered, setIsHovered ] = useState(false);
-    const { time } = busyness;
+    const { time, data } = busyness;
     const timesArray = [];
     const currentHour = time === index && day === "Today";
-
+    const barHeight = currentHour ? data : hour;
+    
     const hoursOfTheDay = () => {
         for (let hour = 0; hour < 24; hour++) {
             const formattedHour = hour === 0 ? "12am" : hour < 12 ? `${hour}am` : hour === 12 ? "12pm" : `${hour - 12}pm`;
@@ -26,17 +27,21 @@ const BusynessByHour = ({ hour, busyness, day, index }) => {
     
     return (
         <>
+        <BarContainer
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
             <BusynessBar
-                hour={`${hour}`}
+                barHeight={`${barHeight}`}
                 className={currentHour ? "isCurrentTime" : ""}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
             />
+        </BarContainer>
+            
             {isHovered && (
                 <Tooltip>
                     {currentHour
-                        ? <>{<AccentSpan>{hour}</AccentSpan>} visitors in the last hour</>
-                        : <>{<AccentSpan>{hour}</AccentSpan>} visitors per hour on average</>
+                        ? <>{<AccentSpan>{barHeight}</AccentSpan>} visitors in the last hour</>
+                        : <>{<AccentSpan>{barHeight}</AccentSpan>} visitors per hour on average</>
                     }
                 </Tooltip>
             )}
@@ -46,13 +51,22 @@ const BusynessByHour = ({ hour, busyness, day, index }) => {
     )
 };
 
+const BarContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    width: fit-content;
+    height: 100%;
+`;
+
 const BusynessBar = styled.div`
-    height: ${({hour }) => (hour ? hour : 0)}px;
+    height: ${({ barHeight }) => (barHeight ? barHeight : 1)}px;
     width: 21px;
     background-color: var(--blue-accent-color);
     box-shadow: inset 0 0 3px 1px rgb(89, 111, 133);
     border-radius: 3px 3px 0 0;
-    margin-bottom: 1px;
+    margin: 1px;
+    padding-top: 2px;
 
     &:hover {
         box-shadow: inset 0 0 10px 8px rgb(69, 99, 128);
