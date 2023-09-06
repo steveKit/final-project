@@ -33,7 +33,7 @@ const BusynessByHour = ({ hour, busyness, day, index }) => {
         >
             <BusynessBar
                 barHeight={`${barHeight}`}
-                className={currentHour ? "isCurrentTime" : ""}
+                className={`${isHovered ? "containerHovered" : ""} ${currentHour ? "isCurrentTime" : ""}`}
             />
         </BarContainer>
             
@@ -68,17 +68,17 @@ const BusynessBar = styled.div`
     margin: 1px;
     padding-top: 2px;
 
-    &:hover {
-        box-shadow: inset 0 0 10px 8px rgb(69, 99, 128);
-    }
-
     &.isCurrentTime {
         background-color: var(--accent-color);
         box-shadow: inset 0 0 5px 1px rgb(179, 128, 119);
         border-radius: 3px 3px 0 0;
     }
 
-    &.isCurrentTime:hover {
+    &.containerHovered {
+        box-shadow: inset 0 0 10px 8px rgb(69, 99, 128);
+    }
+
+    &.isCurrentTime.containerHovered {
         box-shadow: inset 0 0 10px 5px rgb(185, 92, 76);
     }
 `;
