@@ -2,7 +2,7 @@ import { createGlobalStyle } from "styled-components";
 
 export default  createGlobalStyle`
     :root {
-        --primary-color: rgb(243, 247, 244);
+        --primary-color: #f3f7f4;
         --secondary-color: #B7A18F;
         --accent-color: #b17368;
         --bold-accent-color: #EA9A1C;
@@ -103,7 +103,7 @@ export default  createGlobalStyle`
         border-spacing: 0;
     }
     button {
-        box-shadow: 2px 4px 5px 1px rgb(49, 59, 71);
+        box-shadow: 2px 2px 4px 1px rgb(68, 82, 99);
         font-family: var(--body-font-family);
         font-size: 1.2rem;
         color: var(--light-accent-color);

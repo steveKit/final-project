@@ -14,7 +14,7 @@ const Header = ({ isAuthenticated, login, logout }) => {
     
         <Wrapper>
             <Link to="/" onClick={handleLogoClick} >
-                <Logo src="/assets/Favicon.png"/>
+                <Logo src="assets/LonerLogo.png" />
             </Link>
             
             {isAuthenticated ? (
@@ -46,14 +46,23 @@ const Wrapper = styled.div`
     background: rgba(0, 0, 0, 0.1);
     backdrop-filter: brightness(100%) blur(3px);
     z-index: 15;
-    padding: 15px 15px;
+    padding: 15px 2rem;
 `;
 
 const Logo = styled.img`
-    width: 75px;
-    height: 75px;
+    box-sizing: border-box;
+    box-shadow: 2px 2px 4px 1px rgb(68, 82, 99);
+    width: 40px;
+    height: 40px;
     opacity: 75%;
     border-radius: 50px;
+    border: 1px solid var(--primary-color);
+    transition: all ease 300ms;
+
+    &:hover {
+        box-shadow: none;
+        border: 1px solid var(--text-color);
+    }
 `;
 
 const LogoutContainer = styled.div`

@@ -54,10 +54,18 @@ const BusynessBar = styled.div`
     border-radius: 3px 3px 0 0;
     margin-bottom: 1px;
 
+    &:hover {
+        box-shadow: inset 0 0 10px 8px rgb(69, 99, 128);
+    }
+
     &.isCurrentTime {
         background-color: var(--accent-color);
         box-shadow: inset 0 0 5px 1px rgb(179, 128, 119);
         border-radius: 3px 3px 0 0;
+    }
+
+    &.isCurrentTime:hover {
+        box-shadow: inset 0 0 10px 5px rgb(185, 92, 76);
     }
 `;
 
