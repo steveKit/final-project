@@ -23,7 +23,6 @@ const Wrapper = styled.div`
     flex-direction: column;
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: brightness(85%) blur(3px);
-
     padding: 1.5rem 1.5rem 4rem;
     border: 2px solid var(--text-color);
     border-radius: 5px;
