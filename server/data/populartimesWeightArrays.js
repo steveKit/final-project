@@ -1,5 +1,5 @@
-const lowestWeights = [5, 8, 10, 10, 10, 15];
-const lowWeights = [20, 25, 30, 35];
+const lowestWeights = [5, 8, 10, 10, 15];
+const lowWeights = [15, 20, 25, 30, 35];
 const midWeights = [45, 50, 55, 60, 65];
 const highWeights = [70, 70, 70, 75, 75];
 const variableMidDayWeights = [ 35, 40, 40, 45, 50, 55, 60, 65 ];
