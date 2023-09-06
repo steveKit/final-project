@@ -1,9 +1,4 @@
 const {
-    lowestWeights,
-    lowWeights,
-    midWeights,
-    highWeights,
-    variableMidDayWeights,
     hourWeights
 } = require("../data/populartimesWeightArrays");
 
