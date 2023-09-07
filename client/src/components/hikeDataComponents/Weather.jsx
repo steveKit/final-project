@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const Weather = ({ activeHike, forecast }) => {
-    const { name } = activeHike;
+    const { name, rating } = activeHike;
     const { current } = forecast;
     const { condition, temp_c, feelslike_c, humidity, uv, precip_mm, wind_kph, wind_dir } = current;
 
@@ -12,7 +12,8 @@ const Weather = ({ activeHike, forecast }) => {
                 {current &&
                         <Image src={condition.icon} alt="Weather icon" />
                 }
-            </TitleContainer>            
+            </TitleContainer>  
+            <TextContent className="rating" ><AccentSpan>{rating} </AccentSpan>stars</TextContent>          
             <SubtitleText>Current Weather</SubtitleText>
             <Line />
             <WeatherContainer>               
@@ -55,6 +56,14 @@ const TextContent = styled.p`
     font-size: 1.2rem;
     font-weight: 500;
     padding: 1px 0;
+
+    &.rating {
+        font-size: 1.5rem;
+        position: absolute;
+        top: 5.5rem;
+        margin-left: 1rem;
+        color: var(--bold-accent-color);
+    }
 `;
 
 const AccentSpan = styled.span`
