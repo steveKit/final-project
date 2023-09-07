@@ -21,15 +21,15 @@ const HikeById = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
-    }, [])
 
-    useEffect(() => {
         if (userHikes && userHikes.some(hike => hike.place_id === hikeId)) {
             const findActiveHike = userHikes.find((hike) => hike.place_id === hikeId);
             setActiveHike(findActiveHike);
-        } else {
+        } else if (localHikes.length > 0) {
             const findActiveHike = localHikes.find((hike) => hike.place_id === hikeId);
             setActiveHike(findActiveHike);
+        } else {
+            navigate("/");
         }
     }, []); 
 
@@ -140,7 +140,7 @@ const HikeById = () => {
                     ))}
                     <Button
                         className="back"
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate(-1 || '/')}
                     >
                         Go back
                     </Button>

@@ -14,7 +14,7 @@ const Header = ({ isAuthenticated, login, logout }) => {
     
         <Wrapper>
             <Link to="/" onClick={handleLogoClick} >
-                <Logo src="assets/LonerLogo.png" />
+                <Logo src="/assets/LonerLogo.png" />
             </Link>
             
             {isAuthenticated ? (

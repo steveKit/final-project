@@ -12,23 +12,32 @@ const Favorites = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0)
+
+        if (!userObj) {
+            navigate("/");
+        }
     }, [])
 
     return ( 
-        <Wrapper>      
-        {userHikes && userHikes.length > 0 ? (
-            userHikes.map(hike => (
-                <Hikes key={hike.place_id} hike={hike} />
-            ))
-        ) : (
-            <TextWrapper>
-                <TextContent>Hello {userObj.username}! Add some favorite hikes and they'll show up here.</TextContent>
-            </TextWrapper>           
-        )}
+        <Wrapper>
+            {userObj ? (
+                userHikes && userHikes.length > 0 ? (
+                    userHikes.map(hike => (
+                        <Hikes key={hike.place_id} hike={hike} />
+                    ))
+                ) : (
+                    <TextWrapper>
+                        <TextContent>Hello {userObj.username}! Add some favorite hikes and they'll show up here.</TextContent>
+                    </TextWrapper>           
+                )
+            ) : (
+                <></>
+            )}    
+        
         <ButtonWrapper>
             <Button
                 className="back"
-                onClick={() => navigate(-1)}
+                onClick={() => navigate(-1 || '/')}
             >
                 Go back
             </Button> 
