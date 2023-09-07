@@ -70,23 +70,26 @@ const getUserHikes = async (req, res) => {
         }));
 
         if (hikeDetails) {
-            const addPhotos = await Promise.all(hikeDetails.map( async (hike) => {
-                const photoRef = hike.photos ? hike.photos[0].photo_reference : 'AUacShi6l6hVIvY3H0UKdqfmnhEA6Mzfc12xVuj8sCnsNv2WKuMWpROIy4owHNHTLIeAs_OzvgD-BZjo8igxiaGF8vlPttIV8fEVnggbSqUx1OrIljzMHVu9-QB3twDBT230DSOobQAhjAATVoEnCB7-MHg2LljmX1pRdBi5D7BbSo8_Qgi7';
-                const response = await axios.get('https://maps.googleapis.com/maps/api/place/photo', {
-                    params: {
-                        maxwidth: 600,
-                        photo_reference: photoRef,
-                        key: GOOGLE_URI,
-                    },
-                });
-                const hikePhotoUrl = response.request.res.responseUrl;
-                const { photos, ...hikeWithoutPhotos } = hike;
-                
-                return {
-                    ...hikeWithoutPhotos,
-                    photoURL: hikePhotoUrl,
-                };
-            }));
+            const addPhotos = await Promise.all(hikeDetails
+                .filter(hike => hike.photos)
+                .map( async (hike) => {
+                    const photoRef = hike.photos[0].photo_reference;
+                    const response = await axios.get('https://maps.googleapis.com/maps/api/place/photo', {
+                        params: {
+                            maxwidth: 600,
+                            photo_reference: photoRef,
+                            key: GOOGLE_URI,
+                        },
+                    });
+                    const hikePhotoUrl = response.request.res.responseUrl;
+                    const { photos, ...hikeWithoutPhotos } = hike;
+                    
+                    return {
+                        ...hikeWithoutPhotos,
+                        photoURL: hikePhotoUrl,
+                    };
+                })
+            );
 
             if (addPhotos) {
 
