@@ -30,6 +30,7 @@ const HikeContainer = styled.button`
     flex-direction: column;
     background: rgba(0, 0, 0, 0.2);
     backdrop-filter: brightness(85%) blur(3px);
+    box-shadow: none;
     padding: 2rem;
     border: 2px solid var(--text-color);
     border-radius: 8px;
