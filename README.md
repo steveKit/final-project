@@ -2,7 +2,7 @@ Loner
 
 Overview
 
-Loner is a React application that helps you find hikes within a specified radius of a search location and provides historic foot traffic data along with current busyness, weather data and user reviews. Since it was not easily available, all foot traffic data is synthesized by the server-side using weighted arrays & appended to each hike object returned to the frontend. Loner utilizes various technologies, including Google Maps JavaScript API, Weather API, and Auth0 for authentication. The application is built using React, MongoDB, and Node.js.
+Loner is a React application that helps you find hikes within a specified radius of a search location and provides historic foot traffic data along with current busyness, weather data and user reviews. Since it was not easily available, all foot traffic data is synthesized by the server-side using weighted arrays & appended to each hike object returned to the frontend. Loner utilizes the following APIs: Google Maps JavaScript API, Weather API, and Auth0. The application was built using MongoDB, Express, React and Node.js.
 
 Features
 
@@ -20,6 +20,7 @@ Technologies Used
 
  - React
  - MongoDB
+ - Express
  - Node.js
  - Google Maps JavaScript API
  - Weather API
