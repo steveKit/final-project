@@ -140,7 +140,7 @@ const HikeById = () => {
                     ))}
                     <Button
                         className="back"
-                        onClick={() => navigate(-1 || '/')}
+                        onClick={() => navigate(-1 ? -1 : "/")}
                     >
                         Go back
                     </Button>

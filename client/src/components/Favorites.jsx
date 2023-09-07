@@ -37,7 +37,7 @@ const Favorites = () => {
         <ButtonWrapper>
             <Button
                 className="back"
-                onClick={() => navigate(-1 || '/')}
+                onClick={() => navigate('/')}
             >
                 Go back
             </Button> 
