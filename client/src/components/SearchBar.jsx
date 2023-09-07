@@ -106,7 +106,7 @@ const SearchInput = styled.input`
     }
 
     &.error::placeholder {
-        color: var(--bold-accent-color);
+        color: white;
         font-size: 1.4rem;
         font-weight: 500;
     }
