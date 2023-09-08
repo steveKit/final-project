@@ -76,7 +76,7 @@ const getHikes = async (req, res) => {
                             },
                         });
 
-                        const driveTimeToHike = distanceToTrailHead.data.rows[0].elements[0].duration.text;
+                        const driveTimeToHike = distanceToTrailHead.data.rows[0].elements[0].duration? distanceToTrailHead.data.rows[0].elements[0].duration.text : 'No roads to trailhead.';
                         const hikePhotoURL = hikePhotoURLRef.request.res.responseUrl;
                         const populartimes = getPopularTimes();
                         const busyness = getBusynessNow();

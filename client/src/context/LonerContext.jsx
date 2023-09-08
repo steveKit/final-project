@@ -21,6 +21,7 @@ const lonerReducer = (state, action) => {
         case SET_USER_HIKES:
             return { ...state, userHikes: action.payload };
         case SET_ERROR:
+            console.log(action.payload.message);
             const errorMessage = action.payload.status === 500 ? "Server error." : action.payload.message;
             const errObj = { ...action.payload, message: errorMessage };
             
