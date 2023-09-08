@@ -42,11 +42,11 @@ const getHikes = async (req, res) => {
             const { results } = hikeResults.data;
 
             if (results.length > 0) {
+                
                 const hikesArray = await Promise.all(results
                     //filter out results without photos
                     .filter(hike => hike.photos)
                     .map( async (hike) => {
-                    
                         //get ref photo from google
                         const photoRef = hike.photos[0].photo_reference;
                         const hikePhotoURLRef = await axios.get('https://maps.googleapis.com/maps/api/place/photo', {
@@ -96,8 +96,11 @@ const getHikes = async (req, res) => {
                         })                     
                     })
                 );
-
-                res.status(200).json({ status: 200, data: hikesArray });  
+                if (hikesArray.length > 0) {
+                    res.status(200).json({ status: 200, data: hikesArray });
+                } else {
+                    res.status(404).json({ status: 404, message: `No hikes found.`})
+                }           
             } else {
                 res.status(404).json({ status: 404, message: `No hikes found.`})
             }
