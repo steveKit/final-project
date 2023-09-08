@@ -8,12 +8,14 @@ const Weather = ({ activeHike, forecast }) => {
     return (
         <>
             <TitleContainer>
-                <TitleText>{name}</TitleText>
+                <TitleTextContainer>
+                    <TitleText>{name}</TitleText>
+                    <TextContent className="rating" ><AccentSpan>{rating} </AccentSpan>stars</TextContent>  
+                </TitleTextContainer>
                 {current &&
                         <Image src={condition.icon} alt="Weather icon" />
                 }
             </TitleContainer>  
-            <TextContent className="rating" ><AccentSpan>{rating} </AccentSpan>stars</TextContent>          
             <SubtitleText>Current Weather</SubtitleText>
             <Line />
             <WeatherContainer>               
@@ -40,6 +42,11 @@ const TitleText = styled.h1`
     font-size: 2rem;
 `;
 
+const TitleTextContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
 const SubtitleText = styled.h3`
     color: var(--primary-color);
     font-size: 1.5rem;
@@ -58,10 +65,8 @@ const TextContent = styled.p`
     padding: 1px 0;
 
     &.rating {
+        margin: 0.5rem;
         font-size: 1.5rem;
-        position: absolute;
-        top: 5.5rem;
-        margin-left: 1rem;
         color: var(--bold-accent-color);
     }
 `;

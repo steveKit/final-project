@@ -1,8 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const Header = ({ isAuthenticated, login, logout }) => {
-    const location = useLocation();
 
     const handleLogoClick = () => {
         if (location.pathname === '/') {

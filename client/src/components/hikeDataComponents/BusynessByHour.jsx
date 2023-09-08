@@ -5,8 +5,8 @@ const BusynessByHour = ({ hour, busyness, day, index }) => {
     const [ isHovered, setIsHovered ] = useState(false);
     const { time, data } = busyness;
     const timesArray = [];
-    const currentHour = time === index && day === "Today";
-    const barHeight = currentHour ? data : hour;
+    const isCurrentHour = time === index && day === "Today";
+    const barHeight = isCurrentHour ? data : hour;
     
     const hoursOfTheDay = () => {
         for (let hour = 0; hour < 24; hour++) {
@@ -16,30 +16,22 @@ const BusynessByHour = ({ hour, busyness, day, index }) => {
     };
 
     hoursOfTheDay();
-
-    const handleMouseEnter = () => {
-        setIsHovered(true);
-    };
-
-    const handleMouseLeave = () => {
-        setIsHovered(false);
-    };
     
     return (
         <>
         <BarContainer
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
             <BusynessBar
                 barHeight={`${barHeight}`}
-                className={`${isHovered ? "containerHovered" : ""} ${currentHour ? "isCurrentTime" : ""}`}
+                className={`${isHovered ? "containerHovered" : ""} ${isCurrentHour ? "isCurrentTime" : ""}`}
             />
         </BarContainer>
             
             {isHovered && (
                 <Tooltip>
-                    {currentHour
+                    {isCurrentHour
                         ? <>{<AccentSpan>{barHeight}</AccentSpan>} visitors in the last hour</>
                         : <>{<AccentSpan>{barHeight}</AccentSpan>} visitors per hour on average</>
                     }

@@ -5,18 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { useLonerContext } from "../context/LonerContext";
 import Hikes from "./Hikes";
 
-const Favorites = () => {    
+const Favorites = () => {
+    const navigate = useNavigate();
     const { state } = useLonerContext();
     const { userObj, userHikes } = state;
-    const navigate = useNavigate();
+    
 
     useEffect(() => {
-        window.scrollTo(0, 0)
+        window.scrollTo(0, 0);
 
         if (!userObj) {
             navigate("/");
-        }
-    }, [])
+        };
+    }, []);
 
     return ( 
         <Wrapper>
